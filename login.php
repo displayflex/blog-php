@@ -1,13 +1,10 @@
 <?php
 	session_start();
 
-	if (isset($_SESSION['is_auth'])) {
-		unset($_SESSION['is_auth']);
-	}
+	include_once 'functions.php';
 
-	if (isset($_COOKIE['login'])) {
-		setcookie('login', '', 1, '/');
-		setcookie('password','', 1, '/');
+	if (isset($_SESSION['is_auth']) || isset($_COOKIE['login'])) {
+		logOut();
 	}
 
 	if (count($_POST) > 0) {
@@ -15,8 +12,8 @@
 			$_SESSION['is_auth'] = true;
 			
 			if ($_POST['remember']) {
-				setcookie('login', hash('sha256', 'admin'), time() + 3600 * 24 * 7, '/');
-				setcookie('password', hash('sha256', 'qwerty'), time() + 3600 * 24 * 7, '/');
+				setcookie('login', myHash('admin'), time() + 3600 * 24 * 7, '/');
+				setcookie('password', myHash('qwerty'), time() + 3600 * 24 * 7, '/');
 			}
 			
 			header('Location: index.php');

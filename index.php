@@ -5,15 +5,7 @@
 	include_once 'functions.php';
 
 	if ($_GET['log'] == 'out') {
-		if (isset($_SESSION['is_auth'])) {
-			unset($_SESSION['is_auth']);
-		}
-	
-		if (isset($_COOKIE['login'])) {
-			setcookie('login', '', 1, '/');
-			setcookie('password','', 1, '/');
-		}
-
+		logOut();
 		header('Location: index.php');
 		exit();
 	}
@@ -32,11 +24,12 @@
 	}
 ?>
 
-<br>
 <?php if ($isAuth): ?>
-<a href="add.php">Добавить</a>
-<br>
-<a href="index.php?log=out">Выйти</a>
+	<br>
+	<a href="add.php">Добавить</a>
+	<br>
+	<a href="index.php?log=out">Выйти</a>
 <?php else :?>
-<a href="login.php">Войти</a>
+	<br>
+	<a href="login.php">Войти</a>
 <?php endif; ?>

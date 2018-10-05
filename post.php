@@ -1,15 +1,6 @@
 <?php
 
-	session_start();
-
 	include_once 'functions.php';
-
-	$isAuth = isAuth();
-
-	if (!$isAuth) {
-		header('Location: index.php');
-		exit();
-	}
 
 	$fname = $_GET['fname'] ?? null;
 
