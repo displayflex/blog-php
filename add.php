@@ -1,10 +1,19 @@
 <?php
 
+	session_start();
+
 	include_once 'functions.php';
 
+	$isAuth = isAuth();
+
+	if (!$isAuth) {
+		header('Location: index.php');
+		exit();
+	}
+
 	if (count($_POST) > 0) {
-		$title = trim($_POST['title']);
-		$content = trim($_POST['content']);
+		$title = trim(htmlspecialchars($_POST['title']));
+		$content = trim(htmlspecialchars($_POST['content']));
 		
 		if ($title == '' || $content == '') {
 			$msg = 'Заполните все поля';
