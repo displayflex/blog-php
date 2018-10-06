@@ -11,18 +11,26 @@
 		exit();
 	}
 
-	$fname = $_GET['fname'];
+	$id = $_GET['id'];
 
-	if (!checkTitle($fname)) {
+	if (!checkTitle($id)) {
 		$msg = 'Ошибка 404. Введены недопустимые символы';
 	} else {
-		if ($fname === null) {
+		if ($id === null) {
 			$msg = 'Ошибка 404, не передано название';
-		} elseif (!file_exists("data/$fname")) {
-			$msg = 'Ошибка 404. Нет такой статьи!';
 		} else {
-			$title = $fname;
-			$content = file_get_contents("data/$title");
+			$sql = sprintf("SELECT * FROM %s WHERE `id`=:id", DB_TABLE);
+			$query = db_query($sql, [
+				'id' => $id
+			]);
+			$post = $query->fetch(PDO::FETCH_ASSOC);
+
+			if (!$post) {
+				echo 'Ошибка 404. Нет такой статьи!';
+			} else {
+				$title = $post['title'];
+				$content = $post['content'];
+			}
 		}
 	
 		if (count($_POST) > 0) {
@@ -31,19 +39,14 @@
 	
 			if ($title == '' || $content == '') {
 				$msg = 'Заполните все поля';
-			} elseif (!checkTitle($title)) {
-				$msg = 'Название содержит недопустимые символы!';
-			} elseif ($title != $fname) {
-				if (file_exists("data/$title")) {
-					$msg = 'Такая статья уже существует!';
-				} else {
-					unlink("data/$fname");
-					file_put_contents("data/$title", $content);
-					header("Location: index.php");
-					exit();
-				}
 			} else {
-				file_put_contents("data/$title", $content);
+				$sql = sprintf("UPDATE %s SET `title`=:t,`content`=:c WHERE `id`=:id", DB_TABLE);
+				$query = db_query($sql, [
+					't' => $title,
+					'c' => $content,
+					'id' => $id
+				]);
+
 				header("Location: index.php");
 				exit();
 			}

@@ -1,6 +1,15 @@
 <?php
 
+	session_start();
+
 	include_once 'functions.php';
+
+	$isAuth = isAuth();
+
+	if (!$isAuth) {
+		header('Location: index.php');
+		exit();
+	}
 
 	$id = $_GET['id'] ?? null;
 
@@ -9,15 +18,11 @@
 	} elseif (!checkTitle($id)) {
 		echo 'Ошибка 404. Введены недопустимые символы';
 	} else {
-		$sql = sprintf("SELECT * FROM %s WHERE `id`=:id", DB_TABLE);
+		$sql = sprintf("DELETE FROM %s WHERE `id`=:id", DB_TABLE);
 		$query = db_query($sql, [
 			'id' => $id
 		]);
-		$post = $query->fetch(PDO::FETCH_ASSOC);
 
-		if (!$post) {
-			echo 'Ошибка 404. Нет такой статьи!';
-		} else {
-			echo nl2br($post['content']);
-		}
+		header('Location: index.php');
+		exit();
 	}

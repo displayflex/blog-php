@@ -17,12 +17,13 @@
 		
 		if ($title == '' || $content == '') {
 			$msg = 'Заполните все поля';
-		} elseif (!checkTitle($title)) {
-			$msg = 'Название содержит недопустимые символы!';
-		} elseif (file_exists("data/$title")) {
-			$msg = 'Такая статья уже существует!';
 		} else {
-			file_put_contents("data/$title", $content);
+			$sql = sprintf("INSERT INTO %s(`title`, `content`) VALUES (:t, :c)", DB_TABLE);
+			$query = db_query($sql, [
+				't' => $title,
+				'c' => $content
+			]);
+
 			header("Location: index.php");
 			exit();
 		}
