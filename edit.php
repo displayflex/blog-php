@@ -11,13 +11,13 @@
 		exit();
 	}
 
-	$id = $_GET['id'];
+	$id = $_GET['id'] ?? null;
 
-	if (!checkTitle($id)) {
-		$msg = 'Ошибка 404. Введены недопустимые символы';
+	if (!checkId($id)) {
+		$msg = 'Ошибка 404. Введены недопустимые символы!';
 	} else {
-		if ($id === null) {
-			$msg = 'Ошибка 404, не передано название';
+		if ($id === null || $id == '') {
+			$msg = 'Ошибка 404. Не передано название!';
 		} else {
 			$sql = sprintf("SELECT * FROM %s WHERE `id`=:id", DB_TABLE);
 			$query = db_query($sql, [

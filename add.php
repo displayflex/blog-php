@@ -16,7 +16,7 @@
 		$content = trim(htmlspecialchars($_POST['content']));
 		
 		if ($title == '' || $content == '') {
-			$msg = 'Заполните все поля';
+			$msg = 'Заполните все поля.';
 		} else {
 			$sql = sprintf("INSERT INTO %s(`title`, `content`) VALUES (:t, :c)", DB_TABLE);
 			$query = db_query($sql, [

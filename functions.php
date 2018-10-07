@@ -4,7 +4,12 @@ include_once 'config.php';
 
 function checkTitle($title)
 {
-	return preg_match(NOT_ALLOWED_IN_TITLE, $title);
+	return preg_match(ALLOWED_IN_TITLE, $title);
+}
+
+function checkId($id)
+{
+	return preg_match(ALLOWED_IN_ID, $id);
 }
 
 function myHash($str)
