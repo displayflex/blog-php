@@ -1,28 +1,25 @@
 <?php
 
-	session_start();
+session_start();
 
-	include_once 'functions.php';
+include_once __DIR__ . '/m/functions.php';
 
-	$isAuth = isAuth();
+$isAuth = isAuth();
 
-	if (!$isAuth) {
-		header('Location: index.php');
-		exit();
-	}
+if (!$isAuth) {
+	header('Location: index.php');
+	exit();
+}
 
-	$id = $_GET['id'] ?? null;
+$id = $_GET['id'] ?? null;
 
-	if ($id === null || $id == '') {
-		echo 'Ошибка 404. Не передано название!';
-	} elseif (!checkId($id)) {
-		echo 'Ошибка 404. Введены недопустимые символы!';
-	} else {
-		$sql = sprintf("DELETE FROM %s WHERE `id`=:id", DB_TABLE);
-		$query = db_query($sql, [
-			'id' => $id
-		]);
+if ($id === null || $id == '') {
+	echo 'Ошибка 404. Не передано название!';
+} elseif (!checkId($id)) {
+	echo 'Ошибка 404. Введены недопустимые символы!';
+} else {
+	deletePost($id);
 
-		header('Location: index.php');
-		exit();
-	}
+	header('Location: index.php');
+	exit();
+}
