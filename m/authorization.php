@@ -22,3 +22,21 @@ function logOut()
 		setcookie('login', '', 1, '/');
 		setcookie('password','', 1, '/');
 }
+
+function myHash($str)
+{
+	return hash('sha256', $str . SALT);
+}
+
+function setCookieParams()
+{
+	setcookie('login', myHash('admin'), time() + 3600 * 24 * 7, '/');
+	setcookie('password', myHash('qwerty'), time() + 3600 * 24 * 7, '/');
+}
+
+function setSessionParams()
+{
+	$_SESSION['is_auth'] = true;
+}
+
+

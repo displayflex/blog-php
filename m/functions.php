@@ -15,10 +15,16 @@ function checkId($id)
 	return preg_match(ALLOWED_IN_ID, $id);
 }
 
-function myHash($str)
-{
-	return hash('sha256', $str . SALT);
-}
+// function showError($msg = null)
+// {
+// 	static $error = [];
+	
+// 	if ($msg != null) {
+// 		$error[] = $msg;
+// 	}
+
+// 	return $error;
+// }
 
 
 

@@ -5,7 +5,7 @@ function dbConnect()
 	static $db;
 	
 	if ($db === null) {
-		$db = new PDO(sprintf('mysql:host=localhost;dbname=%s', DB_NAME), DB_UESRNAME, DB_PASSWORD);
+		$db = new PDO(sprintf('mysql:host=%s;dbname=%s', HOST_ADDRESS, DB_NAME), DB_UESRNAME, DB_PASSWORD);
 		$db->exec('SET NAMES UTF8');
 	}
 	
