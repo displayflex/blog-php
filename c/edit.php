@@ -1,9 +1,5 @@
 <?php
 
-session_start();
-
-include_once __DIR__ . '/m/functions.php';
-
 $isAuth = isAuth();
 
 if (!$isAuth) {
@@ -11,18 +7,20 @@ if (!$isAuth) {
 	exit();
 }
 
-$id = $_GET['id'] ?? null;
+$id = trim($_GET['id'] ?? null);
+
+$err404 = false;
 
 if (!checkId($id)) {
-	$msg = 'Ошибка 404. Введены недопустимые символы!';
+	$err404 = true;
 } else {
 	if ($id === null || $id == '') {
-		$msg = 'Ошибка 404. Не передано название!';
+		$err404 = true;
 	} else {
 		$post = selectOnePost($id);
 
 		if (!$post) {
-			echo 'Ошибка 404. Нет такой статьи!';
+			$err404 = true;
 		} else {
 			$title = $post['title'];
 			$content = $post['content'];
@@ -44,13 +42,14 @@ if (!checkId($id)) {
 	}
 }
 
-$inner = template('v_edit', [
-	'title' => $title,
-	'content' => $content,
-	'msg' => $msg
-]);
+if ($err404) {
+	$inner = template('v_404');
+} else {
+	$inner = template('v_edit', [
+		'title' => $title,
+		'content' => $content,
+		'msg' => $msg
+	]);
+}
 
-echo template('v_main', [
-	'title' => 'Редактирование статьи',
-	'content' => $inner
-]);
+$title = $err404 ? '404' : 'Редактирование статьи';

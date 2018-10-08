@@ -2406,3 +2406,22 @@ select, textarea {
 			}
 
 	}
+
+.header-403 {
+	height: 100vh;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.header-403 h1 {
+	color: #fff;
+	font-size: 50px;
+}
+
+.header-403 p {
+	color: #fff;
+	font-size: 14px;
+}

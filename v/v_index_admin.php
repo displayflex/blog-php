@@ -9,7 +9,7 @@
 					<?=$post['date']?>
 				</span>
 				<h3>
-					<a href="post.php?id=<?=$post['id']?>">
+					<a href="index.php?c=post&id=<?=$post['id']?>">
 						<?=$post['title']?>
 					</a>
 				</h3>
@@ -23,16 +23,16 @@
 					}
 				?>
 			</p>
-			<a href="edit.php?id=<?=$post['id']?>">
+			<a href="index.php?c=edit&id=<?=$post['id']?>">
 				<i class="fa fa-pencil"></i> Редактировать
 			</a>
 			<br>
-			<a href="delete.php?id=<?=$post['id']?>" onclick="return confirm('Удалить статью?')">
+			<a href="index.php?c=delete&id=<?=$post['id']?>" onclick="return confirm('Удалить статью?')">
 				<i class="fa fa-times"></i> Удалить
 			</a>
 		</div>
 	</article>
 <?php endforeach; ?>
 
-<a class="button alt icon fa-file-o" href="add.php">Добавить</a>
+<a class="button alt icon fa-file-o" href="index.php?c=add">Добавить</a>
 <a class="button alt icon fa-sign-out" href="index.php?log=out">Выйти</a>

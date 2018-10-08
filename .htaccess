@@ -1,0 +1,9 @@
+<FilesMatch "\.(php)$">
+	Deny from all
+</FilesMatch>
+
+<FilesMatch "index.(php)$">
+	Allow from all
+</FilesMatch>
+
+ErrorDocument 403 http://%{HTTP_HOST}/v/v_403.html

@@ -9,7 +9,7 @@
 					<?=$post['date']?>
 				</span>
 				<h3>
-					<a href="post.php?id=<?=$post['id']?>">
+					<a href="index.php?c=post&id=<?=$post['id']?>">
 						<?=$post['title']?>
 					</a>
 				</h3>
@@ -27,4 +27,4 @@
 	</article>
 <?php endforeach; ?>
 
-<a class="button medium icon fa-sign-in" href="login.php">Войти</a>
+<a class="button medium icon fa-sign-in" href="index.php?c=login">Войти</a>

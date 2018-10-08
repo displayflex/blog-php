@@ -52,5 +52,5 @@ function deletePost($id)
 		'id' => $id
 	]);
 
-	return true;
+	return $query->rowCount();
 }

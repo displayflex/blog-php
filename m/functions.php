@@ -10,6 +10,11 @@ function checkTitle($title)
 	return preg_match(ALLOWED_IN_TITLE, $title);
 }
 
+function checkController($controller)
+{
+	return preg_match(ALLOWED_IN_CONTROLLER, $controller);
+}
+
 function checkId($id)
 {
 	return preg_match(ALLOWED_IN_ID, $id);
@@ -23,17 +28,3 @@ function template($filename, $vars = [])
 
 	return ob_get_clean();
 }
-
-// function showError($msg = null)
-// {
-// 	static $error = [];
-	
-// 	if ($msg != null) {
-// 		$error[] = $msg;
-// 	}
-
-// 	return $error;
-// }
-
-
-

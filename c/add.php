@@ -1,9 +1,5 @@
 <?php
 
-session_start();
-
-include_once __DIR__ . '/m/functions.php';
-
 $isAuth = isAuth();
 
 if (!$isAuth) {
@@ -35,7 +31,4 @@ $inner = template('v_add', [
 	'msg' => $msg
 ]);
 
-echo template('v_main', [
-	'title' => 'Добавление статьи',
-	'content' => $inner
-]);
+$title = 'Добавление статьи';
