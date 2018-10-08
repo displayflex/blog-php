@@ -21,4 +21,9 @@ if (count($_POST) > 0) {
 	}
 }
 
-include __DIR__ . "/v/v_login.php";
+$inner = template('v_login');
+
+echo template('v_main', [
+	'title' => 'Войти на сайт',
+	'content' => $inner
+]);

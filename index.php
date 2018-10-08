@@ -20,4 +20,13 @@ if ($isAuth) {
 	$template = 'v_index';
 }
 
-include __DIR__ . "/v/$template.php";
+$inner = template($template, [
+	'posts' => $posts
+]);
+
+echo template('v_main', [
+	'title' => 'Главная',
+	'content' => $inner
+]);
+
+

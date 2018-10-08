@@ -15,6 +15,15 @@ function checkId($id)
 	return preg_match(ALLOWED_IN_ID, $id);
 }
 
+function template($filename, $vars = [])
+{
+	extract($vars);
+	ob_start();
+	include "v/$filename.php";
+
+	return ob_get_clean();
+}
+
 // function showError($msg = null)
 // {
 // 	static $error = [];

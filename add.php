@@ -29,4 +29,13 @@ if (count($_POST) > 0) {
 	$msg = '';
 }
 
-include __DIR__ . "/v/v_add.php";
+$inner = template('v_add', [
+	'title' => $title,
+	'content' => $content,
+	'msg' => $msg
+]);
+
+echo template('v_main', [
+	'title' => 'Добавление статьи',
+	'content' => $inner
+]);

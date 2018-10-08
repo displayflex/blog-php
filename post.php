@@ -12,4 +12,11 @@ if ($id === null || $id == '') {
 	$post = selectOnePost($id);
 }
 
-include __DIR__ . "/v/v_post.php";
+$inner = template('v_post', [
+	'post' => $post
+]);
+
+echo template('v_main', [
+	'title' => 'Просмотр статьи',
+	'content' => $inner
+]);

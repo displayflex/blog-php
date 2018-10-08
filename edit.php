@@ -44,4 +44,13 @@ if (!checkId($id)) {
 	}
 }
 
-include __DIR__ . "/v/v_edit.php";
+$inner = template('v_edit', [
+	'title' => $title,
+	'content' => $content,
+	'msg' => $msg
+]);
+
+echo template('v_main', [
+	'title' => 'Редактирование статьи',
+	'content' => $inner
+]);
