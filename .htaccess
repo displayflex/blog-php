@@ -1,3 +1,11 @@
+RewriteEngine on
+
+# Позволяет обращаться к файлам (-f) напрямую, вместо передачи в $_GET['chpu']
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Помещает в $_GET['chpu'] всё, что вписано в адресную строку начиная от корня сайта
+RewriteRule .* index.php?chpu=$0 [QSA]
+
 <FilesMatch "\.(php)$">
 	Deny from all
 </FilesMatch>
@@ -6,4 +14,9 @@
 	Allow from all
 </FilesMatch>
 
-ErrorDocument 403 http://%{HTTP_HOST}/v/v_403.html
+<FilesMatch "v_403.(php)$">
+	Allow from all
+</FilesMatch>
+
+# Перенаправляет на страницу v_403.php в случае ошибки 403
+ErrorDocument 403 http://%{HTTP_HOST}/lesson8/v/v_403.php

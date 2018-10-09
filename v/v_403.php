@@ -1,3 +1,7 @@
+<?php
+	include_once __DIR__ . '/../m/config.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,10 +10,10 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
 	<!-- Делает редирект на индекс через 5 секунд -->
-	<meta http-equiv="refresh" content="5;URL=/../index.php">
+	<meta http-equiv="refresh" content="5;URL=<?=ROOT?>">
 	
 	<title>403</title>
-	<link rel="stylesheet" href="../assets/css/main.css" />
+	<link rel="stylesheet" href="<?=ROOT?>/assets/css/main.css" />
 </head>
 <body>
 		<header id="header-wrapper" class="header-403">

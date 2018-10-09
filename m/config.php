@@ -1,5 +1,7 @@
 <?php
 
+const ROOT = "/lesson8/";
+
 const SALT = "s;fa47wyt";
 
 const ALLOWED_IN_TITLE = "/^[0-9a-z-]+$/i";

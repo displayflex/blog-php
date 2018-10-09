@@ -3,11 +3,11 @@
 $isAuth = isAuth();
 
 if (!$isAuth) {
-	header('Location: index.php');
+	header("Location: " . ROOT);
 	exit();
 }
 
-$id = trim($_GET['id'] ?? null);
+$id = trim($chpuParams[1] ?? null);
 
 $err404 = false;
 
@@ -36,7 +36,7 @@ if (!checkId($id)) {
 		} else {
 			updatePost($id, $title, $content);
 
-			header("Location: index.php");
+			header("Location: " . ROOT);
 			exit();
 		}
 	}

@@ -1,6 +1,6 @@
 <?php
 
-$id = trim($_GET['id'] ?? null);
+$id = trim($chpuParams[1] ?? null);
 
 $err404 = false;
 

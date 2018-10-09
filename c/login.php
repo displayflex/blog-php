@@ -16,7 +16,7 @@ if (count($_POST) > 0) {
 		$login = '';
 		$password = '';
 
-		header('Location: index.php');
+		header("Location: " . ROOT);
 		exit();
 	} else {
 		$msg = "Неверный логин или пароль!";

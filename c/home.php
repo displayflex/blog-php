@@ -2,7 +2,7 @@
 
 if ($_GET['log'] == 'out') {
 	logOut();
-	header('Location: index.php');
+	header("Location: " . ROOT);
 	exit();
 }
 

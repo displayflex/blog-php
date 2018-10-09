@@ -1,7 +1,7 @@
 <?php foreach ($posts as $post): ?>
 	<article class="box excerpt">
 		<a href="#" class="image left">
-			<img src="assets/images/pic0<?=mt_rand(4,6)?>.jpg" alt="" />
+			<img src="<?=ROOT?>assets/images/pic0<?=mt_rand(4,6)?>.jpg" alt="" />
 		</a>
 		<div>
 			<header>
@@ -9,7 +9,7 @@
 					<?=$post['date']?>
 				</span>
 				<h3>
-					<a href="index.php?c=post&id=<?=$post['id']?>">
+					<a href="<?=ROOT?>post/<?=$post['id']?>">
 						<?=$post['title']?>
 					</a>
 				</h3>
@@ -27,4 +27,4 @@
 	</article>
 <?php endforeach; ?>
 
-<a class="button medium icon fa-sign-in" href="index.php?c=login">Войти</a>
+<a class="button medium icon fa-sign-in" href="<?=ROOT?>login">Войти</a>

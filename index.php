@@ -4,7 +4,16 @@ session_start();
 
 include_once __DIR__ . '/m/functions.php';
 
-$controller = trim($_GET['c'] ?? 'home');
+$chpuParams = explode('/', $_GET['chpu']);
+
+$end = count($chpuParams) - 1;
+
+if ($chpuParams[$end] == '') {
+	unset($chpuParams[$end]);
+	$end--;
+}
+
+$controller = trim($chpuParams[0] ?? 'home');
 
 if ($controller === null || $controller == '') {
 	$msg = 'Ошибка 404. Не передано название!';
@@ -23,4 +32,3 @@ echo template('v_main', [
 	'title' => $title,
 	'content' => $inner
 ]);
-

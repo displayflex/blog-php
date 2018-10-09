@@ -3,11 +3,11 @@
 $isAuth = isAuth();
 
 if (!$isAuth) {
-	header('Location: index.php');
+	header("Location: " . ROOT);
 	exit();
 }
 
-$id = trim($_GET['id'] ?? null);
+$id = trim($chpuParams[1] ?? null);
 
 $err404 = false;
 
@@ -23,7 +23,7 @@ if ($err404) {
 } else {
 	deletePost($id);
 
-	header('Location: index.php');
+	header("Location: " . ROOT);
 	exit();
 }
 
