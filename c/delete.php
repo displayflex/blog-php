@@ -21,7 +21,7 @@ if ($err404) {
 	$inner = template('v_404');
 	$title = '404';
 } else {
-	deletePost($id);
+	$postModel->deleteOne($id);
 
 	header("Location: " . ROOT);
 	exit();

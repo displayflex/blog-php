@@ -14,7 +14,7 @@ if (count($_POST) > 0) {
 	if ($title == '' || $content == '') {
 		$msg = 'Заполните все поля.';
 	} else {
-		addPost($title, $content);
+		$postModel->addOne($title, $content);
 
 		header("Location: index.php");
 		exit();

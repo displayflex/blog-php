@@ -17,7 +17,7 @@ if (!checkId($id)) {
 	if ($id === null || $id == '') {
 		$err404 = true;
 	} else {
-		$post = selectOnePost($id);
+		$post = $postModel->getOne($id);
 
 		if (!$post) {
 			$err404 = true;
@@ -34,7 +34,7 @@ if (!checkId($id)) {
 		if ($title == '' || $content == '') {
 			$msg = 'Заполните все поля';
 		} else {
-			updatePost($id, $title, $content);
+			$postModel->updateOne($id, $title, $content);
 
 			header("Location: " . ROOT);
 			exit();

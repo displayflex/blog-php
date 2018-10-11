@@ -9,7 +9,7 @@ if ($id === null || $id == '') {
 } elseif (!checkId($id)) {
 	$err404 = true;
 } else {
-	$post = selectOnePost($id);
+	$post = $postModel->getOne($id);
 }
 
 if (!$post) {

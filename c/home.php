@@ -8,7 +8,7 @@ if ($_GET['log'] == 'out') {
 
 $isAuth = isAuth();
 
-$posts = selectAllPosts();
+$posts = $postModel->getAll();
 
 if ($isAuth) {
 	$template = 'v_index_admin';
