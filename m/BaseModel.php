@@ -1,5 +1,7 @@
 <?php
 
+namespace m;
+
 abstract class BaseModel
 {
 	protected $db;
@@ -18,7 +20,7 @@ abstract class BaseModel
 		$statement->execute();
 		$this->checkError($statement);
 
-		return $statement->fetchAll(PDO::FETCH_ASSOC);
+		return $statement->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	public function getOne($id)
@@ -30,7 +32,7 @@ abstract class BaseModel
 		]);
 		$this->checkError($statement);
 
-		return $statement->fetch(PDO::FETCH_ASSOC);
+		return $statement->fetch(\PDO::FETCH_ASSOC);
 	}
 
 	public function deleteOne($id)
@@ -49,7 +51,7 @@ abstract class BaseModel
 	{
 		$info = $statement->errorInfo();
 
-		if ($info[0] != PDO::ERR_NONE) {
+		if ($info[0] != \PDO::ERR_NONE) {
 			exit($info[2]);
 		}
 	}

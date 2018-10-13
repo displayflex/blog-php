@@ -3,9 +3,14 @@
 session_start();
 
 include_once __DIR__ . '/m/functions.php';
-include_once __DIR__ . '/m/DB.php';
-include_once __DIR__ . '/m/BaseModel.php';
-include_once __DIR__ . '/m/PostModel.php';
+
+use m\DB;
+use m\PostModel;
+
+function __autoload($classname)
+{
+	include_once __DIR__ . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';
+}
 
 $chpuParams = explode('/', $_GET['chpu']);
 
