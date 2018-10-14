@@ -1,6 +1,10 @@
 <?php
 
-$isAuth = isAuth();
+use m\Auth;
+use core\Templater;
+use core\Core;
+
+$isAuth = Auth::check();
 
 if (!$isAuth) {
 	header("Location: " . ROOT);
@@ -13,15 +17,15 @@ $err404 = false;
 
 if ($id === null || $id == '') {
 	$err404 = true;
-} elseif (!checkId($id)) {
+} elseif (!Core::checkId($id)) {
 	$err404 = true;
 }
 
 if ($err404) {
-	$inner = template('v_404');
+	$inner = Templater::build('v_404');
 	$title = '404';
 } else {
-	$postModel->deleteOne($id);
+	$PostsModel->deleteOne($id);
 
 	header("Location: " . ROOT);
 	exit();

@@ -1,5 +1,5 @@
 <?php
-	include_once __DIR__ . '/../m/config.php';
+	include_once __DIR__ . '/../core/config.php';
 ?>
 
 <!DOCTYPE html>

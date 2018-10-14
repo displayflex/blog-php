@@ -1,15 +1,18 @@
 <?php
 
+use core\Templater;
+use core\Core;
+
 $id = trim($chpuParams[1] ?? null);
 
 $err404 = false;
 
 if ($id === null || $id == '') {
 	$err404 = true;
-} elseif (!checkId($id)) {
+} elseif (!Core::checkId($id)) {
 	$err404 = true;
 } else {
-	$post = $postModel->getOne($id);
+	$post = $PostsModel->getOne($id);
 }
 
 if (!$post) {
@@ -17,9 +20,9 @@ if (!$post) {
 }
 
 if ($err404) {
-	$inner = template('v_404');
+	$inner = Templater::build('v_404');
 } else {
-	$inner = template('v_post', [
+	$inner = Templater::build('v_post', [
 		'post' => $post
 	]);
 }

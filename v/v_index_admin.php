@@ -35,4 +35,4 @@
 <?php endforeach; ?>
 
 <a class="button alt icon fa-file-o" href="<?=ROOT?>add">Добавить</a>
-<a class="button alt icon fa-sign-out" href="index.php?log=out">Выйти</a>
+<a class="button alt icon fa-sign-out" href="<?=ROOT?>home?log=out">Выйти</a>

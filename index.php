@@ -2,10 +2,12 @@
 
 session_start();
 
-include_once __DIR__ . '/m/functions.php';
+include_once __DIR__ . '/core/config.php';
 
-use m\DB;
-use m\PostModel;
+use core\DB;
+use m\PostsModel;
+use core\Templater;
+use core\Core;
 
 function __autoload($classname)
 {
@@ -22,14 +24,14 @@ if ($chpuParams[$end] == '') {
 }
 
 $db = DB::connect();
-$postModel = new PostModel($db);
+$PostsModel = new PostsModel($db);
 
 $controller = trim($chpuParams[0] ?? 'home');
 
 if ($controller === null || $controller == '') {
 	$msg = 'Ошибка 404. Не передано название!';
 	$controller = '404';
-} elseif (!checkController($controller)) {
+} elseif (!Core::checkController($controller)) {
 	$msg = 'Ошибка 404. Введены недопустимые символы!';
 	$controller = '404';
 } elseif (!file_exists(__DIR__ . "/c/$controller.php")) {
@@ -39,7 +41,7 @@ if ($controller === null || $controller == '') {
 
 include_once __DIR__ . "/c/$controller.php";
 
-echo template('v_main', [
+echo Templater::build('v_main', [
 	'title' => $title,
 	'content' => $inner
 ]);

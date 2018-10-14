@@ -1,6 +1,10 @@
 <?php
 
-$isAuth = isAuth();
+use m\Auth;
+use core\Templater;
+use core\Core;
+
+$isAuth = Auth::check();
 
 if (!$isAuth) {
 	header("Location: " . ROOT);
@@ -11,13 +15,13 @@ $id = trim($chpuParams[1] ?? null);
 
 $err404 = false;
 
-if (!checkId($id)) {
+if (!Core::checkId($id)) {
 	$err404 = true;
 } else {
 	if ($id === null || $id == '') {
 		$err404 = true;
 	} else {
-		$post = $postModel->getOne($id);
+		$post = $PostsModel->getOne($id);
 
 		if (!$post) {
 			$err404 = true;
@@ -34,7 +38,7 @@ if (!checkId($id)) {
 		if ($title == '' || $content == '') {
 			$msg = 'Заполните все поля';
 		} else {
-			$postModel->updateOne($id, $title, $content);
+			$PostsModel->updateOne($id, $title, $content);
 
 			header("Location: " . ROOT);
 			exit();
@@ -43,9 +47,9 @@ if (!checkId($id)) {
 }
 
 if ($err404) {
-	$inner = template('v_404');
+	$inner = Templater::build('v_404');
 } else {
-	$inner = template('v_edit', [
+	$inner = Templater::build('v_edit', [
 		'title' => $title,
 		'content' => $content,
 		'msg' => $msg

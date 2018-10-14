@@ -1,14 +1,17 @@
 <?php
 
-if ($_GET['log'] == 'out') {
-	logOut();
+use m\Auth;
+use core\Templater;
+
+if (isset($_GET['log']) && $_GET['log'] == 'out') {
+	Auth::logOut();
 	header("Location: " . ROOT);
 	exit();
 }
 
-$isAuth = isAuth();
+$isAuth = Auth::check();
 
-$posts = $postModel->getAll();
+$posts = $PostsModel->getAll();
 
 if ($isAuth) {
 	$template = 'v_index_admin';
@@ -16,10 +19,8 @@ if ($isAuth) {
 	$template = 'v_index';
 }
 
-$inner = template($template, [
+$inner = Templater::build($template, [
 	'posts' => $posts
 ]);
 
 $title = 'Главная';
-
-

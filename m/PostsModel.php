@@ -2,7 +2,7 @@
 
 namespace m;
 
-class PostModel extends BaseModel
+class PostsModel extends BaseModel
 {
 	public function __construct(\PDO $db)
 	{

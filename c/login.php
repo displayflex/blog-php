@@ -1,15 +1,18 @@
 <?php
 
-if (isAuth()) {
-	logOut();
+use m\Auth;
+use core\Templater;
+
+if (Auth::check()) {
+	Auth::logOut();
 }
 
 if (count($_POST) > 0) {
 	if ($_POST['login'] == 'admin' && $_POST['password'] == 'qwerty') {
-		setSessionParams();
+		Auth::setSessionParams();
 		
 		if ($_POST['remember']) {
-			setCookieParams();
+			Auth::setCookieParams();
 		}
 		
 		$msg = '';
@@ -25,7 +28,7 @@ if (count($_POST) > 0) {
 	}
 }
 
-$inner = template('v_login', [
+$inner = Templater::build('v_login', [
 	'msg' => $msg,
 	'login' => $login,
 	'password' => $password

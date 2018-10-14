@@ -1,6 +1,9 @@
 <?php
 
-$isAuth = isAuth();
+use m\Auth;
+use core\Templater;
+
+$isAuth = Auth::check();
 
 if (!$isAuth) {
 	header('Location: index.php');
@@ -14,7 +17,7 @@ if (count($_POST) > 0) {
 	if ($title == '' || $content == '') {
 		$msg = 'Заполните все поля.';
 	} else {
-		$postModel->addOne($title, $content);
+		$PostsModel->addOne($title, $content);
 
 		header("Location: index.php");
 		exit();
@@ -25,7 +28,7 @@ if (count($_POST) > 0) {
 	$msg = '';
 }
 
-$inner = template('v_add', [
+$inner = Templater::build('v_add', [
 	'title' => $title,
 	'content' => $content,
 	'msg' => $msg
