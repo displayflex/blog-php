@@ -1,6 +1,6 @@
 <?php
 
-const ROOT = "/lesson3/";
+const ROOT = "/lesson4/";
 
 const SALT = "s;fa47wyt";
 

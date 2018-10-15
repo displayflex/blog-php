@@ -2,11 +2,12 @@
 
 session_start();
 
+// error_reporting(E_ALL);
+
 include_once __DIR__ . '/core/config.php';
 
 use core\DB;
-use m\PostsModel;
-use core\Templater;
+use models\PostsModel;
 use core\Core;
 
 function __autoload($classname)
@@ -14,34 +15,89 @@ function __autoload($classname)
 	include_once __DIR__ . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';
 }
 
-$chpuParams = explode('/', $_GET['chpu']);
+/**
+ * URI-запрос попадает в $_GET['chpu'], затем разбивается по "/"
+ */
+// $chpuParams = explode('/', $_GET['chpu']);
 
-$end = count($chpuParams) - 1;
+// $end = count($chpuParams) - 1;
 
-if ($chpuParams[$end] == '') {
-	unset($chpuParams[$end]);
+// if ($chpuParams[$end] == '') {
+	// 	unset($chpuParams[$end]);
+	// 	$end--;
+	// }
+
+/**
+ * Разбивает URI-запрос по "/" при помощи $_SERVER['REQUEST_URI'].
+ */
+$uri = $_SERVER['REQUEST_URI'];
+$uriParts = explode('/', $uri);
+unset($uriParts[0]);
+
+if ($uriParts[1] === str_replace('/', '', ROOT)) {
+	unset($uriParts[1]);
+}
+
+$uriParts = array_values($uriParts);
+
+$end = count($uriParts) - 1;
+
+if ($uriParts[$end] == '') {
+	unset($uriParts[$end]);
 	$end--;
 }
 
-$db = DB::connect();
-$PostsModel = new PostsModel($db);
+$controller = isset($uriParts[0]) && $uriParts !== '' ? trim($uriParts[0]) : 'post';
 
-$controller = trim($chpuParams[0] ?? 'home');
+// проверки контроллера?
+// if (!Core::checkController($controller)) {
+// 	$controller = 'Error';
+// } 
 
-if ($controller === null || $controller == '') {
-	$msg = 'Ошибка 404. Не передано название!';
-	$controller = '404';
-} elseif (!Core::checkController($controller)) {
-	$msg = 'Ошибка 404. Введены недопустимые символы!';
-	$controller = '404';
-} elseif (!file_exists(__DIR__ . "/c/$controller.php")) {
-	$msg = 'Ошибка 404. Не верный путь!';
-	$controller = '404';
+switch ($controller) {
+	case 'post':
+		$controller = 'Post';
+		break;
+
+	case 'user':
+		$controller = 'User';
+		break;
+
+	default:
+		$controller = 'Error';
+		break;
 }
 
-include_once __DIR__ . "/c/$controller.php";
+$action = isset($uriParts[1]) && $uriParts[1] !== '' && !ctype_digit($uriParts[1]) ? trim($uriParts[1]) : 'index';
 
-echo Templater::build('v_main', [
-	'title' => $title,
-	'content' => $inner
-]);
+if (isset($uriParts[1]) && ctype_digit($uriParts[1])) {
+	$action = 'post';
+}
+
+$action = sprintf('%sAction', $action);
+
+$id = (isset($uriParts[2]) && ctype_digit($uriParts[2])) || (isset($uriParts[1]) && ctype_digit($uriParts[1]))
+? trim(ctype_digit($uriParts[1]) ? $uriParts[1] : $uriParts[2])
+: null;
+
+if ($controller === 'Error') {
+	$action = 'badAction';
+	$id = null;
+} 
+
+$controller = sprintf('controllers\%sController', $controller);
+
+if (!method_exists($controller, $action) || (isset($uriParts[2]) && !ctype_digit($uriParts[2]))) {
+	$action = 'err404Action';
+	$id = null;
+} 
+
+$controller = new $controller();
+
+if ($id !== null) {
+	$controller->$action($id);
+} else {
+	$controller->$action();
+}
+
+$controller->render();

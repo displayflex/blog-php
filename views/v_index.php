@@ -23,16 +23,8 @@
 					}
 				?>
 			</p>
-			<a href="<?=ROOT?>edit/<?=$post['id']?>">
-				<i class="fa fa-pencil"></i> Редактировать
-			</a>
-			<br>
-			<a href="<?=ROOT?>delete/<?=$post['id']?>" onclick="return confirm('Удалить статью?')">
-				<i class="fa fa-times"></i> Удалить
-			</a>
 		</div>
 	</article>
 <?php endforeach; ?>
 
-<a class="button alt icon fa-file-o" href="<?=ROOT?>add">Добавить</a>
-<a class="button alt icon fa-sign-out" href="<?=ROOT?>home?log=out">Выйти</a>
+<a class="button medium icon fa-sign-in" href="<?=ROOT?>user/login">Войти</a>
