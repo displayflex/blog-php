@@ -2,11 +2,11 @@
 
 session_start();
 
-// error_reporting(E_ALL);
+error_reporting(E_ALL);
 
 include_once __DIR__ . '/core/config.php';
 
-use core\DB;
+use core\DBConnector;
 use models\PostsModel;
 use core\Core;
 
@@ -16,7 +16,7 @@ function __autoload($classname)
 }
 
 /**
- * URI-запрос попадает в $_GET['chpu'], затем разбивается по "/"
+ * После настройки в .htaccess, URI-запрос попадает в $_GET['chpu'], затем разбивается по "/"
  */
 // $chpuParams = explode('/', $_GET['chpu']);
 
@@ -72,25 +72,23 @@ $action = isset($uriParts[1]) && $uriParts[1] !== '' && !ctype_digit($uriParts[1
 
 if (isset($uriParts[1]) && ctype_digit($uriParts[1])) {
 	$action = 'post';
+	$id = trim($uriParts[1]);
+} else {
+	$id = isset($uriParts[2]) && ctype_digit($uriParts[2]) ? trim($uriParts[2]) : null;
 }
 
+$controller = sprintf('controllers\%sController', $controller);
 $action = sprintf('%sAction', $action);
 
-$id = (isset($uriParts[2]) && ctype_digit($uriParts[2])) || (isset($uriParts[1]) && ctype_digit($uriParts[1]))
-? trim(ctype_digit($uriParts[1]) ? $uriParts[1] : $uriParts[2])
-: null;
-
-if ($controller === 'Error') {
-	$action = 'badAction';
+if ($controller === 'controllers\ErrorController') {
+	$action = 'err403Action';
 	$id = null;
-} 
-
-$controller = sprintf('controllers\%sController', $controller);
-
-if (!method_exists($controller, $action) || (isset($uriParts[2]) && !ctype_digit($uriParts[2]))) {
-	$action = 'err404Action';
-	$id = null;
-} 
+} else {
+	if (!method_exists($controller, $action) || (isset($uriParts[2]) && !ctype_digit($uriParts[2]))) {
+		$action = 'err404Action';
+		$id = null;
+	}
+}
 
 $controller = new $controller();
 

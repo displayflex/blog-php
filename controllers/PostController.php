@@ -2,19 +2,26 @@
 
 namespace controllers;
 
-use core\DB;
+use core\DBConnector;
 use models\PostsModel;
 use models\Auth;
 use core\Core;
 
 class PostController extends BaseController
 {
+	protected $PostsModel;
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->PostsModel = new PostsModel(DBConnector::getConnect());
+	}
+
 	public function indexAction()
 	{
 		$isAuth = Auth::check();
 		
-		$PostsModel = new PostsModel(DB::connect());
-		$posts = $PostsModel->getAll();
+		$posts = $this->PostsModel->getAll();
 		
 		if ($isAuth) {
 			$template = 'v_index_admin';
@@ -38,8 +45,7 @@ class PostController extends BaseController
 			exit();
 		}
 
-		$PostsModel = new PostsModel(DB::connect());
-		$post = $PostsModel->getOne($id);
+		$post = $this->PostsModel->getOne($id);
 
 		if (!$post) {
 			$this->err404Action();
@@ -70,8 +76,7 @@ class PostController extends BaseController
 			if ($title == '' || $content == '') {
 				$msg = 'Заполните все поля.';
 			} else {
-				$PostsModel = new PostsModel(DB::connect());
-				$post = $PostsModel->addOne($title, $content);
+				$post = $this->PostsModel->addOne($title, $content);
 		
 				header("Location: " . ROOT);
 				exit();
@@ -103,12 +108,12 @@ class PostController extends BaseController
 		}
 		
 		$err404 = false;
+		$msg = '';
 		
 		if (!Core::checkId($id) || $id === null || $id == '') {
 			$err404 = true;
 		} else {
-			$PostsModel = new PostsModel(DB::connect());
-			$post = $PostsModel->getOne($id);
+			$post = $this->PostsModel->getOne($id);
 	
 			if (!$post) {
 				$err404 = true;
@@ -124,7 +129,7 @@ class PostController extends BaseController
 				if ($title == '' || $content == '') {
 					$msg = 'Заполните все поля';
 				} else {
-					$PostsModel->updateOne($id, $title, $content);
+					$this->PostsModel->updateOne($id, $title, $content);
 		
 					header("Location: " . ROOT);
 					exit();
@@ -165,8 +170,7 @@ class PostController extends BaseController
 		if ($err404) {
 			$this->err404Action();
 		} else {
-			$PostsModel = new PostsModel(DB::connect());
-			$post = $PostsModel->deleteOne($id);
+			$post = $this->PostsModel->deleteOne($id);
 		
 			header("Location: " . ROOT);
 			exit();
@@ -175,6 +179,7 @@ class PostController extends BaseController
 
 	public function err404Action()
 	{
+		header("HTTP/1.0 404 Not Found");
 		$this->title .= ' | 404';
 		$this->content = $this->build('v_404');
 	}

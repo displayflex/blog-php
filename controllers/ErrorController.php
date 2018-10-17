@@ -4,9 +4,10 @@ namespace controllers;
 
 class ErrorController extends BaseController
 {
-	public function badAction()
+	public function err403Action()
 	{
-			header("Location: " . ROOT . "views/v_403.php");
-			exit();
+		// header('HTTP/1.0 403 Forbidden');
+		header("Location: " . ROOT . "views/v_403.php");
+		exit();
 	}
 }
