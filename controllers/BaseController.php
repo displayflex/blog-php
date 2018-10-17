@@ -12,7 +12,7 @@ class BaseController
 
 	public function __construct(Request $request)
 	{
-		$this->title = 'MyBlog';
+		$this->title = SITE_TITLE;
 		$this->content = '';
 		$this->request = $request;
 	}

@@ -6,6 +6,8 @@ use models\Auth;
 
 class UserController extends BaseController
 {
+	const MSG_LOGIN_ERR = 'Неверный логин или пароль!';
+
 	public function loginAction()
 	{
 		if (Auth::check()) {
@@ -16,7 +18,7 @@ class UserController extends BaseController
 			$login = $this->request->getPOST('login');
 			$password = $this->request->getPOST('password');
 
-			if ($login === 'admin' && $password === 'qwerty') {
+			if ($login === ADMIN_LOGIN && $password === ADMIN_PASSWORD) {
 				Auth::setSessionParams();
 
 				if ($this->request->getPOST('remember') !== null) {
@@ -30,11 +32,11 @@ class UserController extends BaseController
 				header("Location: " . ROOT);
 				exit();
 			} else {
-				$msg = "Неверный логин или пароль!";
+				$msg = self::MSG_LOGIN_ERR;
 			}
 		}
 
-		$this->title .= ' | Войти на сайт';
+		$this->title .= LOGIN_SUBTITLE;
 
 		$this->content = $this->build(
 			'v_login',

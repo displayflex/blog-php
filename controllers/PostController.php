@@ -9,6 +9,8 @@ use core\Core;
 
 class PostController extends BaseController
 {
+	const MSG_EMPTY_FIELDS = 'Заполните все поля!';
+
 	public function indexAction()
 	{
 		$PostsModel = new PostsModel(DBConnector::getConnect());
@@ -20,7 +22,7 @@ class PostController extends BaseController
 			$template = 'v_index';
 		}
 		
-		$this->title .= ' | Главная';
+		$this->title .= INDEX_SUBTITLE;
 		$this->content = $this->build(
 			$template,
 			[
@@ -44,7 +46,7 @@ class PostController extends BaseController
 		if (!$post) {
 			$this->err404Action();
 		} else {
-			$this->title .= ' | Просмотр статьи';
+			$this->title .= POST_SUBTITLE;
 			$this->content = $this->build(
 				'v_post',
 				[
@@ -66,7 +68,7 @@ class PostController extends BaseController
 			$content = trim(htmlspecialchars($this->request->getPOST('content')));
 			
 			if ($title == '' || $content == '') {
-				$msg = 'Заполните все поля.';
+				$msg = self::MSG_EMPTY_FIELDS;
 			} else {
 				$PostsModel = new PostsModel(DBConnector::getConnect());
 				$post = $PostsModel->addOne($title, $content);
@@ -80,7 +82,7 @@ class PostController extends BaseController
 			$msg = '';
 		}
 
-		$this->title .= ' | Добавление статьи';
+		$this->title .= POST_ADD_SUBTITLE;
 		$this->content = $this->build(
 			'v_add',
 			[
@@ -120,7 +122,7 @@ class PostController extends BaseController
 				$content = trim(htmlspecialchars($this->request->getPOST('content')));
 		
 				if ($title == '' || $content == '') {
-					$msg = 'Заполните все поля';
+					$msg = self::MSG_EMPTY_FIELDS;
 				} else {
 					$PostsModel->updateOne($id, $title, $content);
 		
@@ -133,7 +135,7 @@ class PostController extends BaseController
 		if ($err404) {
 			$this->err404Action();
 		} else {
-			$this->title .= ' | Редактирование статьи';
+			$this->title .= POST_EDIT_SUBTITLE;
 			$this->content = $this->build(
 				'v_edit',
 				[
@@ -173,7 +175,7 @@ class PostController extends BaseController
 	public function err404Action()
 	{
 		header("HTTP/1.0 404 Not Found");
-		$this->title .= ' | 404';
+		$this->title .= ERR404_SUBTITLE;
 		$this->content = $this->build('v_404');
 	}
 }

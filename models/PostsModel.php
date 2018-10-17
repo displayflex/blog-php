@@ -4,9 +4,11 @@ namespace models;
 
 class PostsModel extends BaseModel
 {
+	const TABLE_POSTS = 'news';
+
 	public function __construct(\PDO $db)
 	{
-		parent::__construct($db, 'news');
+		parent::__construct($db, self::TABLE_POSTS);
 	}
 
 	public function addOne($title, $content)
