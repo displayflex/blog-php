@@ -2,15 +2,19 @@
 
 namespace controllers;
 
+use core\Request;
+
 class BaseController
 {
 	protected $title;
 	protected $content;
+	protected $request;
 
-	public function __construct()
+	public function __construct(Request $request)
 	{
 		$this->title = 'MyBlog';
 		$this->content = '';
+		$this->request = $request;
 	}
 
 	public function render()

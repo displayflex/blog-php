@@ -2,13 +2,14 @@
 
 session_start();
 
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
 
 include_once __DIR__ . '/core/config.php';
 
 use core\DBConnector;
 use models\PostsModel;
 use core\Core;
+use core\Request;
 
 function __autoload($classname)
 {
@@ -49,11 +50,6 @@ if ($uriParts[$end] == '') {
 
 $controller = isset($uriParts[0]) && $uriParts !== '' ? trim($uriParts[0]) : 'post';
 
-// проверки контроллера?
-// if (!Core::checkController($controller)) {
-// 	$controller = 'Error';
-// } 
-
 switch ($controller) {
 	case 'post':
 		$controller = 'Post';
@@ -90,12 +86,11 @@ if ($controller === 'controllers\ErrorController') {
 	}
 }
 
-$controller = new $controller();
-
 if ($id !== null) {
-	$controller->$action($id);
-} else {
-	$controller->$action();
+	$_GET['id'] = $id;
 }
 
+$request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_SESSION, $_FILES);
+$controller = new $controller($request);
+$controller->$action();
 $controller->render();

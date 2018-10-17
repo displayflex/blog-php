@@ -12,11 +12,14 @@ class UserController extends BaseController
 			Auth::logOut();
 		}
 		
-		if (count($_POST) > 0) {
-			if ($_POST['login'] == 'admin' && $_POST['password'] == 'qwerty') {
+		if ($this->request->isPOST()) {
+			$login = $this->request->getPOST('login');
+			$password = $this->request->getPOST('password');
+
+			if ($login === 'admin' && $password === 'qwerty') {
 				Auth::setSessionParams();
-				
-				if ($_POST['remember']) {
+
+				if ($this->request->getPOST('remember') !== null) {
 					Auth::setCookieParams();
 				}
 				
@@ -28,8 +31,6 @@ class UserController extends BaseController
 				exit();
 			} else {
 				$msg = "Неверный логин или пароль!";
-				$login = $_POST['login'];
-				$password = $_POST['password'];
 			}
 		}
 

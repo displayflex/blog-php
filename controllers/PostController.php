@@ -9,21 +9,12 @@ use core\Core;
 
 class PostController extends BaseController
 {
-	protected $PostsModel;
-
-	public function __construct()
-	{
-		parent::__construct();
-		$this->PostsModel = new PostsModel(DBConnector::getConnect());
-	}
-
 	public function indexAction()
 	{
-		$isAuth = Auth::check();
+		$PostsModel = new PostsModel(DBConnector::getConnect());
+		$posts = $PostsModel->getAll();
 		
-		$posts = $this->PostsModel->getAll();
-		
-		if ($isAuth) {
+		if (Auth::check()) {
 			$template = 'v_index_admin';
 		} else {
 			$template = 'v_index';
@@ -38,14 +29,17 @@ class PostController extends BaseController
 		);
 	}
 
-	public function postAction($id = null)
+	public function postAction()
 	{
+		$id = $this->request->getGET('id');
+
 		if ($id === null) {
 			header("Location: " . ROOT);
 			exit();
 		}
 
-		$post = $this->PostsModel->getOne($id);
+		$PostsModel = new PostsModel(DBConnector::getConnect());
+		$post = $PostsModel->getOne($id);
 
 		if (!$post) {
 			$this->err404Action();
@@ -62,21 +56,20 @@ class PostController extends BaseController
 
 	public function addAction()
 	{
-		$isAuth = Auth::check();
-
-		if (!$isAuth) {
+		if (!Auth::check()) {
 			header("Location: " . ROOT);
 			exit();
 		}
 		
-		if (count($_POST) > 0) {
-			$title = trim(htmlspecialchars($_POST['title']));
-			$content = trim(htmlspecialchars($_POST['content']));
+		if ($this->request->isPOST()) {
+			$title = trim(htmlspecialchars($this->request->getPOST('title')));
+			$content = trim(htmlspecialchars($this->request->getPOST('content')));
 			
 			if ($title == '' || $content == '') {
 				$msg = 'Заполните все поля.';
 			} else {
-				$post = $this->PostsModel->addOne($title, $content);
+				$PostsModel = new PostsModel(DBConnector::getConnect());
+				$post = $PostsModel->addOne($title, $content);
 		
 				header("Location: " . ROOT);
 				exit();
@@ -98,22 +91,22 @@ class PostController extends BaseController
 		);
 	}
 
-	public function editAction($id = null)
+	public function editAction()
 	{
-		$isAuth = Auth::check();
-
-		if (!$isAuth) {
+		if (!Auth::check()) {
 			header("Location: " . ROOT);
 			exit();
 		}
 		
 		$err404 = false;
 		$msg = '';
+		$id = $this->request->getGET('id');
 		
 		if (!Core::checkId($id) || $id === null || $id == '') {
 			$err404 = true;
 		} else {
-			$post = $this->PostsModel->getOne($id);
+			$PostsModel = new PostsModel(DBConnector::getConnect());
+			$post = $PostsModel->getOne($id);
 	
 			if (!$post) {
 				$err404 = true;
@@ -123,13 +116,13 @@ class PostController extends BaseController
 			}
 			
 			if (count($_POST) > 0) {
-				$title = trim(htmlspecialchars($_POST['title']));
-				$content = trim(htmlspecialchars($_POST['content']));
+				$title = trim(htmlspecialchars($this->request->getPOST('title')));
+				$content = trim(htmlspecialchars($this->request->getPOST('content')));
 		
 				if ($title == '' || $content == '') {
 					$msg = 'Заполните все поля';
 				} else {
-					$this->PostsModel->updateOne($id, $title, $content);
+					$PostsModel->updateOne($id, $title, $content);
 		
 					header("Location: " . ROOT);
 					exit();
@@ -152,16 +145,15 @@ class PostController extends BaseController
 		}
 	}
 
-	public function deleteAction($id = null)
+	public function deleteAction()
 	{
-		$isAuth = Auth::check();
-
-		if (!$isAuth) {
+		if (!Auth::check()) {
 			header("Location: " . ROOT);
 			exit();
 		}
 		
 		$err404 = false;
+		$id = $this->request->getGET('id');
 		
 		if ($id === null || $id == '' || !Core::checkId($id)) {
 			$err404 = true;
@@ -170,7 +162,8 @@ class PostController extends BaseController
 		if ($err404) {
 			$this->err404Action();
 		} else {
-			$post = $this->PostsModel->deleteOne($id);
+			$PostsModel = new PostsModel(DBConnector::getConnect());
+			$post = $PostsModel->deleteOne($id);
 		
 			header("Location: " . ROOT);
 			exit();
