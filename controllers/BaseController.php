@@ -28,6 +28,12 @@ class BaseController
 		);
 	}
 
+	protected function redirect($uri)
+	{
+		header(sprintf('Location: %s', $uri));
+		exit();
+	}
+
 	protected function build($template, array $params = [])
 	{
 		extract($params);

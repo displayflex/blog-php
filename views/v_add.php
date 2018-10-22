@@ -1,3 +1,4 @@
+<h2 class="icon fa-file-text-o">Добавить пост</h2>
 <form method="post">
 	Название<br>
 	<input type="text" name="title" value="<?=$title?>"><br>

@@ -27,32 +27,32 @@ class Request
 
 	public function getGET($key = null)
 	{
-		return  $this->getData('get', $key);
+		return  $this->getData($this->get, $key);
 	}
 
 	public function getPOST($key = null)
 	{
-		return  $this->getData('post', $key);
+		return  $this->getData($this->post, $key);
 	}
 
 	public function getSERVER($key = null)
 	{
-		return  $this->getData('server', $key);
+		return  $this->getData($this->server, $key);
 	}
 
 	public function getCOOKIE($key = null)
 	{
-		return  $this->getData('cookie', $key);
+		return  $this->getData($this->cookie, $key);
 	}
 
 	public function getFILES($key = null)
 	{
-		return  $this->getData('files', $key);
+		return  $this->getData($this->files, $key);
 	}
 
 	public function getSESSION($key = null)
 	{
-		return  $this->getData('session', $key);
+		return  $this->getData($this->session, $key);
 	}
 	
 	public function isGET()
@@ -65,14 +65,14 @@ class Request
 		return $this->server['REQUEST_METHOD'] === self::METHOD_POST;
 	}
 
-	private function getData($method, $key)
+	private function getData(array $arr, $key = null)
 	{
 		if (!$key) {
-			return $this->$method;
+			return $arr;
 		}
 
-		if (isset($this->$method[$key])) {
-			return $this->$method[$key];
+		if (isset($arr[$key])) {
+			return $arr[$key];
 		}
 
 		return null;

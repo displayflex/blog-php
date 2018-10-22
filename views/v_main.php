@@ -62,8 +62,7 @@
 
 										<!-- Article list -->
 											<section class="box article-list">
-												<h2 class="icon fa-file-text-o">Недавние посты</h2>
-
+												
 												<?=$content?>
 
 											</section>
@@ -74,7 +73,7 @@
 											<section class="box spotlight">
 												<h2 class="icon fa-file-text-o">Spotlight</h2>
 												<article>
-													<a href="#" class="image featured"><img src="assets/images/pic07.jpg" alt=""></a>
+													<a href="#" class="image featured"><img src="<?=ROOT?>assets/images/pic07.jpg" alt=""></a>
 													<header>
 														<h3><a href="#">Neural Implants</a></h3>
 														<p>The pros and cons. Mostly cons.</p>

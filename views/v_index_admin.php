@@ -1,3 +1,4 @@
+<h2 class="icon fa-file-text-o">Недавние посты</h2>
 <?php foreach ($posts as $post): ?>
 	<article class="box excerpt">
 		<a href="#" class="image left">

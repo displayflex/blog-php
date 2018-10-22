@@ -4,6 +4,7 @@ namespace controllers;
 
 use core\DBConnector;
 use models\PostsModel;
+use core\DBDriver;
 use models\Auth;
 use core\Core;
 
@@ -13,8 +14,8 @@ class PostController extends BaseController
 
 	public function indexAction()
 	{
-		$PostsModel = new PostsModel(DBConnector::getConnect());
-		$posts = $PostsModel->getAll();
+		$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+		$posts = $postsModel->getAll();
 		
 		if (Auth::check()) {
 			$template = 'v_index_admin';
@@ -36,12 +37,11 @@ class PostController extends BaseController
 		$id = $this->request->getGET('id');
 
 		if ($id === null) {
-			header("Location: " . ROOT);
-			exit();
+			$this->redirect(ROOT);
 		}
 
-		$PostsModel = new PostsModel(DBConnector::getConnect());
-		$post = $PostsModel->getOne($id);
+		$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+		$post = $postsModel->getOne($id);
 
 		if (!$post) {
 			$this->err404Action();
@@ -59,8 +59,7 @@ class PostController extends BaseController
 	public function addAction()
 	{
 		if (!Auth::check()) {
-			header("Location: " . ROOT);
-			exit();
+			$this->redirect(ROOT);
 		}
 		
 		if ($this->request->isPOST()) {
@@ -70,11 +69,13 @@ class PostController extends BaseController
 			if ($title == '' || $content == '') {
 				$msg = self::MSG_EMPTY_FIELDS;
 			} else {
-				$PostsModel = new PostsModel(DBConnector::getConnect());
-				$post = $PostsModel->addOne($title, $content);
+				$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+				$id = $postsModel->addOne([
+					'title' => $title,
+					'content' => $content
+				]);
 		
-				header("Location: " . ROOT);
-				exit();
+				$this->redirect(sprintf('%spost/%s', ROOT, $id));
 			}
 		} else {
 			$title = '';
@@ -96,8 +97,7 @@ class PostController extends BaseController
 	public function editAction()
 	{
 		if (!Auth::check()) {
-			header("Location: " . ROOT);
-			exit();
+			$this->redirect(ROOT);
 		}
 		
 		$err404 = false;
@@ -107,8 +107,8 @@ class PostController extends BaseController
 		if (!Core::checkId($id) || $id === null || $id == '') {
 			$err404 = true;
 		} else {
-			$PostsModel = new PostsModel(DBConnector::getConnect());
-			$post = $PostsModel->getOne($id);
+			$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+			$post = $postsModel->getOne($id);
 	
 			if (!$post) {
 				$err404 = true;
@@ -124,10 +124,14 @@ class PostController extends BaseController
 				if ($title == '' || $content == '') {
 					$msg = self::MSG_EMPTY_FIELDS;
 				} else {
-					$PostsModel->updateOne($id, $title, $content);
+					$postsModel->updateOne([
+						'title' => $title,
+						'content' => $content
+					], [
+						'id' => $id
+					]);
 		
-					header("Location: " . ROOT);
-					exit();
+					$this->redirect(ROOT);
 				}
 			}
 		}
@@ -150,8 +154,7 @@ class PostController extends BaseController
 	public function deleteAction()
 	{
 		if (!Auth::check()) {
-			header("Location: " . ROOT);
-			exit();
+			$this->redirect(ROOT);
 		}
 		
 		$err404 = false;
@@ -164,11 +167,12 @@ class PostController extends BaseController
 		if ($err404) {
 			$this->err404Action();
 		} else {
-			$PostsModel = new PostsModel(DBConnector::getConnect());
-			$post = $PostsModel->deleteOne($id);
+			$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+			$post = $postsModel->deleteOne([
+				'id' => $id
+			]);
 		
-			header("Location: " . ROOT);
-			exit();
+			$this->redirect(ROOT);
 		}
 	}
 

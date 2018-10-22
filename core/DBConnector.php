@@ -15,7 +15,7 @@ class DBConnector
 		return self::$instance;
 	}
 
-	protected static function getPDO()
+	private static function getPDO()
 	{
 		$dsn = sprintf('%s:host=%s;dbname=%s', 'mysql', HOST_ADDRESS, DB_NAME);
 		$db = new \PDO($dsn, DB_UESRNAME, DB_PASSWORD);
