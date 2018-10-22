@@ -124,12 +124,16 @@ class PostController extends BaseController
 				if ($title == '' || $content == '') {
 					$msg = self::MSG_EMPTY_FIELDS;
 				} else {
-					$postsModel->updateOne([
-						'title' => $title,
-						'content' => $content
-					], [
-						'id' => $id
-					]);
+					$postsModel->updateOne(
+						[
+							'title' => $title,
+							'content' => $content
+						],
+						'id=:id',
+						[
+							'id' => $id
+						]
+					);
 		
 					$this->redirect(ROOT);
 				}
@@ -168,9 +172,12 @@ class PostController extends BaseController
 			$this->err404Action();
 		} else {
 			$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
-			$post = $postsModel->deleteOne([
-				'id' => $id
-			]);
+			$post = $postsModel->deleteOne(
+				'id=:id',
+				[
+					'id' => $id
+				]
+			);
 		
 			$this->redirect(ROOT);
 		}

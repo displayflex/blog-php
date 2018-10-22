@@ -14,7 +14,6 @@ class DBDriver
 		$this->pdo = $pdo;
 	}
 
-	// TODO: order by??
 	public function select($sql, array $params = [], $fetch = self::FETCH_ALL)
 	{
 		$stmt = $this->pdo->prepare($sql);
@@ -38,47 +37,31 @@ class DBDriver
 		return $this->pdo->lastInsertId();
 	}
 
-	public function update($table, $params, $where)
+	public function update($table, $params, $where, $whereParams)
 	{
 		$setField = [];
 
-		foreach (array_keys($params) as $key => $value) {
-			$setField[$key] = $value . '=:' . $value;
+		foreach ($params as $key => $value) {
+			$setField[] = $key . '=:' . $key;
 		}
 
 		$setField = implode(', ', $setField);
 
-		$whereField = [];
-
-		foreach (array_keys($where) as $key => $value) {
-			$whereField[$key] = $value . '=:' . $value;
-		}
-
-		$whereField = implode(', ', $whereField);
-
-		$sql = sprintf("UPDATE %s SET %s WHERE %s", $table, $setField, $whereField);
+		$sql = sprintf("UPDATE %s SET %s WHERE %s", $table, $setField, $where);
 
 		$stmt = $this->pdo->prepare($sql);
-		$stmt->execute(array_merge($params, $where));
+		$stmt->execute(array_merge($params, $whereParams));
 		$this->checkError($stmt);
 
 		return $this->pdo->lastInsertId();
 	}
 
-	public function delete($table, $where)
+	public function delete($table, $where, $whereParams)
 	{
-		$whereField = [];
-
-		foreach (array_keys($where) as $key => $value) {
-			$whereField[$key] = $value . '=:' . $value;
-		}
-
-		$whereField = implode(', ', $whereField);
-
-		$sql = sprintf("DELETE FROM %s WHERE %s", $table, $whereField);
+		$sql = sprintf("DELETE FROM %s WHERE %s", $table, $where);
 
 		$stmt = $this->pdo->prepare($sql);
-		$stmt->execute($where);
+		$stmt->execute($whereParams);
 		$this->checkError($stmt);
 
 		return $stmt->rowCount();
