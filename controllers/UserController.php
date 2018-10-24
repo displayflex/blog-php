@@ -13,7 +13,7 @@ class UserController extends BaseController
 		if (Auth::check()) {
 			Auth::logOut();
 		}
-		
+
 		if ($this->request->isPOST()) {
 			$login = $this->request->getPOST('login');
 			$password = $this->request->getPOST('password');
@@ -24,11 +24,11 @@ class UserController extends BaseController
 				if ($this->request->getPOST('remember') !== null) {
 					Auth::setCookieParams();
 				}
-				
+
 				$msg = '';
 				$login = '';
 				$password = '';
-		
+
 				header("Location: " . ROOT);
 				exit();
 			} else {
@@ -50,9 +50,9 @@ class UserController extends BaseController
 
 	public function logoutAction()
 	{
-			Auth::logOut();
+		Auth::logOut();
 
-			header("Location: " . ROOT);
-			exit();
+		header("Location: " . ROOT);
+		exit();
 	}
 }

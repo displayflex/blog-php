@@ -22,9 +22,9 @@ class Auth
 
 	public static function logOut()
 	{
-			unset($_SESSION['is_auth']);
-			setcookie('login', '', 1, '/');
-			setcookie('password','', 1, '/');
+		unset($_SESSION['is_auth']);
+		setcookie('login', '', 1, '/');
+		setcookie('password', '', 1, '/');
 	}
 
 	public static function setCookieParams()
@@ -32,12 +32,12 @@ class Auth
 		setcookie('login', self::myHash(ADMIN_LOGIN), time() + 3600 * 24 * 7, '/');
 		setcookie('password', self::myHash(ADMIN_PASSWORD), time() + 3600 * 24 * 7, '/');
 	}
-	
+
 	public static function setSessionParams()
 	{
 		$_SESSION['is_auth'] = true;
 	}
-	
+
 	private function myHash($str)
 	{
 		return hash('sha256', $str . SALT);

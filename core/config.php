@@ -1,6 +1,6 @@
 <?php
 
-const ROOT = "/lesson6/";
+const ROOT = "/lesson7/";
 
 const ALLOWED_IN_TITLE = "/^[0-9a-z-]+$/i";
 const ALLOWED_IN_CONTROLLER = "/^[0-9a-z_]+$/i";

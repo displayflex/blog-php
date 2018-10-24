@@ -22,39 +22,39 @@ class Request
 		$this->server = $server;
 		$this->cookie = $cookie;
 		$this->session = $session;
-		$this->files = $files ;
+		$this->files = $files;
 	}
 
 	public function getGET($key = null)
 	{
-		return  $this->getData($this->get, $key);
+		return $this->getData($this->get, $key);
 	}
 
 	public function getPOST($key = null)
 	{
-		return  $this->getData($this->post, $key);
+		return $this->getData($this->post, $key);
 	}
 
 	public function getSERVER($key = null)
 	{
-		return  $this->getData($this->server, $key);
+		return $this->getData($this->server, $key);
 	}
 
 	public function getCOOKIE($key = null)
 	{
-		return  $this->getData($this->cookie, $key);
+		return $this->getData($this->cookie, $key);
 	}
 
 	public function getFILES($key = null)
 	{
-		return  $this->getData($this->files, $key);
+		return $this->getData($this->files, $key);
 	}
 
 	public function getSESSION($key = null)
 	{
-		return  $this->getData($this->session, $key);
+		return $this->getData($this->session, $key);
 	}
-	
+
 	public function isGET()
 	{
 		return $this->server['REQUEST_METHOD'] === self::METHOD_GET;
