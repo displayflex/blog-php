@@ -3,17 +3,20 @@
 namespace models;
 
 use core\DBDriver;
+use core\Validator;
 
 abstract class BaseModel
 {
 	const SORT_COLUMN = 'date';
 
 	protected $db;
+	protected $validator;
 	protected $table;
 
-	public function __construct(DBDriver $db, $table)
+	public function __construct(DBDriver $db, Validator $validator, $table)
 	{
 		$this->db = $db;
+		$this->validator = $validator;
 		$this->table = $table;
 	}
 
@@ -33,11 +36,25 @@ abstract class BaseModel
 
 	public function addOne(array $params)
 	{
+		$this->validator->execute($params);
+
+		if (!$this->validator->success) {
+			// process the error
+			// $this->validator->errors;
+		}
+
 		return $this->db->insert($this->table, $params);
 	}
 
 	public function updateOne(array $params, $where, array $whereParams)
 	{
+		$this->validator->execute($params);
+
+		if (!$this->validator->success) {
+			// process the error
+			// $this->validator->errors;
+		}
+
 		return $this->db->update($this->table, $params, $where, $whereParams);
 	}
 

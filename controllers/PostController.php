@@ -7,6 +7,7 @@ use models\PostsModel;
 use core\DBDriver;
 use models\Auth;
 use core\Core;
+use core\Validator;
 
 class PostController extends BaseController
 {
@@ -14,15 +15,18 @@ class PostController extends BaseController
 
 	public function indexAction()
 	{
-		$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+		$postsModel = new PostsModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
 		$posts = $postsModel->getAll();
-		
+
 		if (Auth::check()) {
 			$template = 'v_index_admin';
 		} else {
 			$template = 'v_index';
 		}
-		
+
 		$this->title .= INDEX_SUBTITLE;
 		$this->content = $this->build(
 			$template,
@@ -40,7 +44,10 @@ class PostController extends BaseController
 			$this->redirect(ROOT);
 		}
 
-		$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+		$postsModel = new PostsModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
 		$post = $postsModel->getOne($id);
 
 		if (!$post) {
@@ -61,20 +68,23 @@ class PostController extends BaseController
 		if (!Auth::check()) {
 			$this->redirect(ROOT);
 		}
-		
+
 		if ($this->request->isPOST()) {
 			$title = trim(htmlspecialchars($this->request->getPOST('title')));
 			$content = trim(htmlspecialchars($this->request->getPOST('content')));
-			
+
 			if ($title == '' || $content == '') {
 				$msg = self::MSG_EMPTY_FIELDS;
 			} else {
-				$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+				$postsModel = new PostsModel(
+					new DBDriver(DBConnector::getConnect()),
+					new Validator()
+				);
 				$id = $postsModel->addOne([
 					'title' => $title,
 					'content' => $content
 				]);
-		
+
 				$this->redirect(sprintf('%spost/%s', ROOT, $id));
 			}
 		} else {
@@ -99,28 +109,31 @@ class PostController extends BaseController
 		if (!Auth::check()) {
 			$this->redirect(ROOT);
 		}
-		
+
 		$err404 = false;
 		$msg = '';
 		$id = $this->request->getGET('id');
-		
+
 		if (!Core::checkId($id) || $id === null || $id == '') {
 			$err404 = true;
 		} else {
-			$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+			$postsModel = new PostsModel(
+				new DBDriver(DBConnector::getConnect()),
+				new Validator()
+			);
 			$post = $postsModel->getOne($id);
-	
+
 			if (!$post) {
 				$err404 = true;
 			} else {
 				$title = $post['title'];
 				$content = $post['content'];
 			}
-			
+
 			if (count($_POST) > 0) {
 				$title = trim(htmlspecialchars($this->request->getPOST('title')));
 				$content = trim(htmlspecialchars($this->request->getPOST('content')));
-		
+
 				if ($title == '' || $content == '') {
 					$msg = self::MSG_EMPTY_FIELDS;
 				} else {
@@ -134,12 +147,12 @@ class PostController extends BaseController
 							'id' => $id
 						]
 					);
-		
+
 					$this->redirect(ROOT);
 				}
 			}
 		}
-		
+
 		if ($err404) {
 			$this->err404Action();
 		} else {
@@ -160,25 +173,28 @@ class PostController extends BaseController
 		if (!Auth::check()) {
 			$this->redirect(ROOT);
 		}
-		
+
 		$err404 = false;
 		$id = $this->request->getGET('id');
-		
+
 		if ($id === null || $id == '' || !Core::checkId($id)) {
 			$err404 = true;
 		}
-		
+
 		if ($err404) {
 			$this->err404Action();
 		} else {
-			$postsModel = new PostsModel(new DBDriver(DBConnector::getConnect()));
+			$postsModel = new PostsModel(
+				new DBDriver(DBConnector::getConnect()),
+				new Validator()
+			);
 			$post = $postsModel->deleteOne(
 				'id=:id',
 				[
 					'id' => $id
 				]
 			);
-		
+
 			$this->redirect(ROOT);
 		}
 	}
