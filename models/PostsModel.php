@@ -11,18 +11,18 @@ class PostsModel extends BaseModel
 
 	protected $schema = [
 		'id' => [
-			'type' => 'integer',
+			'type' => Validator::TYPE_INTEGER,
 			'primary' => true
 		],
 		'title' => [
-			'type' => 'string',
+			'type' => Validator::TYPE_STRING,
 			'length' => [5, 20],
 			'notBlank' => true,
 			'required' => true
 		],
 		'content' => [
-			'type' => 'string',
-			'length' => 'big',
+			'type' => Validator::TYPE_STRING,
+			'length' => Validator::LENGTH_ANY,
 			'notBlank' => true,
 			'required' => true
 		],
