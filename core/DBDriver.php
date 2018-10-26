@@ -18,7 +18,6 @@ class DBDriver
 	{
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute($params);
-		$this->checkError($stmt);
 
 		return $fetch === self::FETCH_ALL ? $stmt->fetchAll() : $stmt->fetch();
 	}
@@ -32,7 +31,6 @@ class DBDriver
 
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute($params);
-		$this->checkError($stmt);
 
 		return $this->pdo->lastInsertId();
 	}
@@ -51,7 +49,6 @@ class DBDriver
 
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute(array_merge($params, $whereParams));
-		$this->checkError($stmt);
 
 		return $this->pdo->lastInsertId();
 	}
@@ -62,17 +59,7 @@ class DBDriver
 
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute($whereParams);
-		$this->checkError($stmt);
 
 		return $stmt->rowCount();
-	}
-
-	protected function checkError($stmt)
-	{
-		$info = $stmt->errorInfo();
-
-		if ($info[0] != \PDO::ERR_NONE) {
-			exit($info[2]);
-		}
 	}
 }

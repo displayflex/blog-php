@@ -4,6 +4,7 @@ namespace models;
 
 use core\DBDriver;
 use core\Validator;
+use core\Exceptions\ModelIncorrectDataException;
 
 abstract class BaseModel
 {
@@ -39,8 +40,7 @@ abstract class BaseModel
 		$this->validator->execute($params);
 
 		if (!$this->validator->success) {
-			// process the error
-			// $this->validator->errors;
+			throw new ModelIncorrectDataException($this->validator->errors);
 		}
 
 		return $this->db->insert($this->table, $params);
@@ -51,8 +51,7 @@ abstract class BaseModel
 		$this->validator->execute($params);
 
 		if (!$this->validator->success) {
-			// process the error
-			// $this->validator->errors;
+			throw new ModelIncorrectDataException($this->validator->errors);
 		}
 
 		return $this->db->update($this->table, $params, $where, $whereParams);

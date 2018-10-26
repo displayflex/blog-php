@@ -7,4 +7,4 @@
 	<input type="checkbox" name="remember">Запомнить<br>
 	<input type="submit" value="Войти">
 </form>
-<p><?=$msg?></p>
+<p class="warning-msg"><?=$msg;?></p>

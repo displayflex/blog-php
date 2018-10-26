@@ -8,10 +8,12 @@ use core\DBDriver;
 use models\Auth;
 use core\Core;
 use core\Validator;
+use core\Exceptions\ModelIncorrectDataException;
+use core\Exceptions\ErrorNotFoundException;
 
 class PostController extends BaseController
 {
-	const MSG_EMPTY_FIELDS = 'Заполните все поля!';
+	const MSG_ERROR = 'Ошибка 404!';
 
 	public function indexAction()
 	{
@@ -51,7 +53,7 @@ class PostController extends BaseController
 		$post = $postsModel->getOne($id);
 
 		if (!$post) {
-			$this->err404Action();
+			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
 		} else {
 			$this->title .= POST_SUBTITLE;
 			$this->content = $this->build(
@@ -73,9 +75,7 @@ class PostController extends BaseController
 			$title = trim(htmlspecialchars($this->request->getPOST('title')));
 			$content = trim(htmlspecialchars($this->request->getPOST('content')));
 
-			if ($title == '' || $content == '') {
-				$msg = self::MSG_EMPTY_FIELDS;
-			} else {
+			try {
 				$postsModel = new PostsModel(
 					new DBDriver(DBConnector::getConnect()),
 					new Validator()
@@ -86,7 +86,11 @@ class PostController extends BaseController
 				]);
 
 				$this->redirect(sprintf('%spost/%s', ROOT, $id));
+			} catch (ModelIncorrectDataException $e) {
+				$errors = array_reduce($e->getErrors(), 'array_merge', array());
+				$msg = implode('<br>', $errors);
 			}
+
 		} else {
 			$title = '';
 			$content = '';
@@ -134,9 +138,7 @@ class PostController extends BaseController
 				$title = trim(htmlspecialchars($this->request->getPOST('title')));
 				$content = trim(htmlspecialchars($this->request->getPOST('content')));
 
-				if ($title == '' || $content == '') {
-					$msg = self::MSG_EMPTY_FIELDS;
-				} else {
+				try {
 					$postsModel->updateOne(
 						[
 							'title' => $title,
@@ -149,12 +151,15 @@ class PostController extends BaseController
 					);
 
 					$this->redirect(ROOT);
+				} catch (ModelIncorrectDataException $e) {
+					$errors = array_reduce($e->getErrors(), 'array_merge', array());
+					$msg = implode('<br>', $errors);
 				}
 			}
 		}
 
 		if ($err404) {
-			$this->err404Action();
+			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
 		} else {
 			$this->title .= POST_EDIT_SUBTITLE;
 			$this->content = $this->build(
@@ -174,15 +179,10 @@ class PostController extends BaseController
 			$this->redirect(ROOT);
 		}
 
-		$err404 = false;
 		$id = $this->request->getGET('id');
 
 		if ($id === null || $id == '' || !Core::checkId($id)) {
-			$err404 = true;
-		}
-
-		if ($err404) {
-			$this->err404Action();
+			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
 		} else {
 			$postsModel = new PostsModel(
 				new DBDriver(DBConnector::getConnect()),
@@ -197,12 +197,5 @@ class PostController extends BaseController
 
 			$this->redirect(ROOT);
 		}
-	}
-
-	public function err404Action()
-	{
-		header("HTTP/1.0 404 Not Found");
-		$this->title .= ERR404_SUBTITLE;
-		$this->content = $this->build('v_404');
 	}
 }

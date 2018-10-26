@@ -2,6 +2,8 @@
 
 namespace core;
 
+use core\Exceptions\ValidatorException;
+
 class Validator
 {
 	const TYPE_STRING = 'string';
@@ -17,12 +19,12 @@ class Validator
 	public function execute(array $fields)
 	{
 		if (!$this->rules) {
-			// error
+			throw new ValidatorException('Rules for validation not found');
 		}
-
+		
 		foreach ($this->rules as $name => $rulesList) {
 			// првоерка на обязательные поля
-			if (!isset($fields[$name]) && isset($rulesList['required'])) {
+			if (!isset($fields[$name]) && isset($rulesList['required']) && $rulesList['required']) {
 				$this->errors[$name][] = sprintf('Field [%s] is required!', $name);
 			}
 
@@ -62,7 +64,7 @@ class Validator
 					$this->errors[$name][] = sprintf('Field [%s] has an incorrect length!', $name);
 				}
 			}
-			
+
 			if (empty($this->errors[$name])) {
 				if (isset($rulesList['type']) && $rulesList['type'] === self::TYPE_STRING) {
 					$this->clean[$name] = trim(htmlspecialchars($fields[$name]));
@@ -88,7 +90,7 @@ class Validator
 	{
 		$field = trim($field);
 
-		return $field === null || $field = '';
+		return $field === null || $field === '';
 	}
 
 	public function isTypeMatch($field, $type)
@@ -102,7 +104,7 @@ class Validator
 				return gettype($field) === self::TYPE_INTEGER || ctype_digit($field);
 				break;
 			default:
-				// error
+				throw new ValidatorException('Incorrect type given to method isTypeMatch()');
 				break;
 		}
 	}
@@ -120,11 +122,11 @@ class Validator
 		}
 
 		if ($isArray && (!$max || !$min)) {
-			// error
+			throw new ValidatorException('Incorrect data given to method isLengthMatch()');
 		}
 
 		if (!$isArray && !$max) {
-			// error
+			throw new ValidatorException('Incorrect data given to method isLengthMatch()');
 		}
 
 		$minIsMatch = $min ? $this->isLengthMinMatch($field, $min) : false;

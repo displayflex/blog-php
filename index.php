@@ -10,6 +10,7 @@ use core\DBConnector;
 use models\PostsModel;
 use core\Core;
 use core\Request;
+use core\Exceptions\ErrorNotFoundException;
 
 function __autoload($classname)
 {
@@ -50,47 +51,60 @@ if ($uriParts[$end] == '') {
 
 $controller = isset($uriParts[0]) && $uriParts !== '' ? trim($uriParts[0]) : 'post';
 
-switch ($controller) {
-	case 'post':
-		$controller = 'Post';
-		break;
+try {
+	switch ($controller) {
+		case 'post':
+			$controller = 'Post';
+			break;
 
-	case 'user':
-		$controller = 'User';
-		break;
+		case 'user':
+			$controller = 'User';
+			break;
 
-	default:
-		$controller = 'Error';
-		break;
-}
+		default:
+			throw new ErrorNotFoundException();
+			break;
+	}
 
-$action = isset($uriParts[1]) && $uriParts[1] !== '' && !ctype_digit($uriParts[1]) ? trim($uriParts[1]) : 'index';
+	$action = isset($uriParts[1]) && $uriParts[1] !== '' && !ctype_digit($uriParts[1]) ? trim($uriParts[1]) : 'index';
 
-if (isset($uriParts[1]) && ctype_digit($uriParts[1])) {
-	$action = 'post';
-	$id = trim($uriParts[1]);
-} else {
-	$id = isset($uriParts[2]) && ctype_digit($uriParts[2]) ? trim($uriParts[2]) : null;
-}
+	if (isset($uriParts[1]) && ctype_digit($uriParts[1])) {
+		$action = 'post';
+		$id = trim($uriParts[1]);
+	} else {
+		$id = isset($uriParts[2]) && ctype_digit($uriParts[2]) ? trim($uriParts[2]) : null;
+	}
 
-$controller = sprintf('controllers\%sController', $controller);
-$action = sprintf('%sAction', $action);
+	$controller = sprintf('controllers\%sController', $controller);
+	$action = sprintf('%sAction', $action);
 
-if ($controller === 'controllers\ErrorController') {
-	$action = 'err403Action';
-	$id = null;
-} else {
-	if (!method_exists($controller, $action) || (isset($uriParts[2]) && !ctype_digit($uriParts[2]))) {
-		$action = 'err404Action';
+	if ($controller === 'controllers\ErrorController') {
+		$action = 'err403Action';
 		$id = null;
+	} else {
+		if (!method_exists($controller, $action) || (isset($uriParts[2]) && !ctype_digit($uriParts[2]))) {
+			$action = 'err404Action';
+			$id = null;
+		}
+	}
+
+	if ($id !== null) {
+		$_GET['id'] = $id;
+	}
+
+	$request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_SESSION, $_FILES);
+	$controller = new $controller($request);
+	$controller->$action();
+} catch (\Exception $e) {
+	$request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_SESSION, $_FILES);
+	$controller = sprintf('controllers\%sController', 'Base');
+	$controller = new $controller($request);
+
+	if ($e->getCode() === 404) {
+		$controller->error404Handler();
+	} else {
+		$controller->errorHandler($e->getMessage(), $e->getTraceAsString());
 	}
 }
 
-if ($id !== null) {
-	$_GET['id'] = $id;
-}
-
-$request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_SESSION, $_FILES);
-$controller = new $controller($request);
-$controller->$action();
 $controller->render();

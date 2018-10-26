@@ -2407,6 +2407,7 @@ select, textarea {
 
 	}
 
+/* My */
 .header-403 {
 	height: 100vh;
 	margin: 0;
@@ -2424,4 +2425,11 @@ select, textarea {
 .header-403 p {
 	color: #fff;
 	font-size: 14px;
+}
+
+.warning-msg {
+	margin-top: 15px;
+	padding: 5px;
+	color: rgb(219, 90, 90);
+	font-size: 17px;
 }

@@ -6,4 +6,4 @@
 	<textarea name="content"><?=$content?></textarea><br>
 	<input type="submit" value="Изменить">
 </form>
-<?=$msg;?>
+<p class="warning-msg"><?=$msg;?></p>

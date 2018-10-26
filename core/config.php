@@ -1,6 +1,12 @@
 <?php
 
-const ROOT = "/lesson7/";
+const ROOT = '/lesson8/';
+
+/**
+ * true - development mode
+ * false - production mode
+ */
+const ENVIROMENT_DEV = true;
 
 const ALLOWED_IN_TITLE = "/^[0-9a-z-]+$/i";
 const ALLOWED_IN_CONTROLLER = "/^[0-9a-z_]+$/i";
@@ -17,6 +23,7 @@ const INDEX_SUBTITLE = ' | Главная';
 const POST_SUBTITLE = ' | Просмотр статьи';
 const POST_ADD_SUBTITLE = ' | Добавление статьи';
 const POST_EDIT_SUBTITLE = ' | Редактирование статьи';
+const ERR_SUBTITLE = ' | Error';
 const ERR404_SUBTITLE = ' | 404';
 const LOGIN_SUBTITLE = ' | Войти на сайт';
 

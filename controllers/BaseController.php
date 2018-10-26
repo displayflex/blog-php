@@ -3,6 +3,7 @@
 namespace controllers;
 
 use core\Request;
+use core\Exceptions\ErrorNotFoundException;
 
 class BaseController
 {
@@ -17,6 +18,11 @@ class BaseController
 		$this->request = $request;
 	}
 
+	public function __call($name, $params)
+	{
+		throw new ErrorNotFoundException();
+	}
+
 	public function render()
 	{
 		echo $this->build(
@@ -26,6 +32,24 @@ class BaseController
 				'content' => $this->content
 			]
 		);
+	}
+
+	public function errorHandler($message, $trace)
+	{
+		$msg = ENVIROMENT_DEV ? $message . '<br><br>Trace:<br>' . $trace : $message;
+		$this->title .= ERR_SUBTITLE;
+		$this->content = $this->build(
+			'v_404_inline',
+			[
+				'msg' => $msg
+			]
+		);
+	}
+
+	public function error404Handler()
+	{
+		header("HTTP/1.0 404 Not Found");
+		$this->redirect(ROOT . "views/v_403.php");
 	}
 
 	protected function redirect($uri)
