@@ -2,6 +2,8 @@
 
 namespace models;
 
+use core\Config;
+
 class Auth
 {
 	public static function check()
@@ -11,7 +13,7 @@ class Auth
 		if (isset($_SESSION['is_auth']) && $_SESSION['is_auth']) {
 			$isAuth = true;
 		} elseif (isset($_COOKIE['login']) && isset($_COOKIE['password'])) {
-			if ($_COOKIE['login'] == self::myHash(ADMIN_LOGIN) && $_COOKIE['password'] == self::myHash(ADMIN_PASSWORD)) {
+			if ($_COOKIE['login'] == self::myHash(Config::ADMIN_LOGIN) && $_COOKIE['password'] == self::myHash(Config::ADMIN_PASSWORD)) {
 				$_SESSION['is_auth'] = true;
 				$isAuth = true;
 			}
@@ -29,8 +31,8 @@ class Auth
 
 	public static function setCookieParams()
 	{
-		setcookie('login', self::myHash(ADMIN_LOGIN), time() + 3600 * 24 * 7, '/');
-		setcookie('password', self::myHash(ADMIN_PASSWORD), time() + 3600 * 24 * 7, '/');
+		setcookie('login', self::myHash(Config::ADMIN_LOGIN), time() + 3600 * 24 * 7, '/');
+		setcookie('password', self::myHash(Config::ADMIN_PASSWORD), time() + 3600 * 24 * 7, '/');
 	}
 
 	public static function setSessionParams()
@@ -40,6 +42,6 @@ class Auth
 
 	private function myHash($str)
 	{
-		return hash('sha256', $str . SALT);
+		return hash('sha256', $str . Config::SALT);
 	}
 }

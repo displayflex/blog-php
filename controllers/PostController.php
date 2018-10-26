@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use core\Config;
 use core\DBConnector;
 use models\PostsModel;
 use core\DBDriver;
@@ -29,7 +30,7 @@ class PostController extends BaseController
 			$template = 'v_index';
 		}
 
-		$this->title .= INDEX_SUBTITLE;
+		$this->title .= Config::INDEX_SUBTITLE;
 		$this->content = $this->build(
 			$template,
 			[
@@ -43,7 +44,7 @@ class PostController extends BaseController
 		$id = $this->request->getGET('id');
 
 		if ($id === null) {
-			$this->redirect(ROOT);
+			$this->redirect(Config::ROOT);
 		}
 
 		$postsModel = new PostsModel(
@@ -55,7 +56,7 @@ class PostController extends BaseController
 		if (!$post) {
 			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
 		} else {
-			$this->title .= POST_SUBTITLE;
+			$this->title .= Config::POST_SUBTITLE;
 			$this->content = $this->build(
 				'v_post',
 				[
@@ -68,7 +69,7 @@ class PostController extends BaseController
 	public function addAction()
 	{
 		if (!Auth::check()) {
-			$this->redirect(ROOT);
+			$this->redirect(Config::ROOT);
 		}
 
 		if ($this->request->isPOST()) {
@@ -85,7 +86,7 @@ class PostController extends BaseController
 					'content' => $content
 				]);
 
-				$this->redirect(sprintf('%spost/%s', ROOT, $id));
+				$this->redirect(sprintf('%spost/%s', Config::ROOT, $id));
 			} catch (ModelIncorrectDataException $e) {
 				$errors = array_reduce($e->getErrors(), 'array_merge', array());
 				$msg = implode('<br>', $errors);
@@ -97,7 +98,7 @@ class PostController extends BaseController
 			$msg = '';
 		}
 
-		$this->title .= POST_ADD_SUBTITLE;
+		$this->title .= Config::POST_ADD_SUBTITLE;
 		$this->content = $this->build(
 			'v_add',
 			[
@@ -111,7 +112,7 @@ class PostController extends BaseController
 	public function editAction()
 	{
 		if (!Auth::check()) {
-			$this->redirect(ROOT);
+			$this->redirect(Config::ROOT);
 		}
 
 		$err404 = false;
@@ -150,7 +151,7 @@ class PostController extends BaseController
 						]
 					);
 
-					$this->redirect(ROOT);
+					$this->redirect(Config::ROOT);
 				} catch (ModelIncorrectDataException $e) {
 					$errors = array_reduce($e->getErrors(), 'array_merge', array());
 					$msg = implode('<br>', $errors);
@@ -161,7 +162,7 @@ class PostController extends BaseController
 		if ($err404) {
 			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
 		} else {
-			$this->title .= POST_EDIT_SUBTITLE;
+			$this->title .= Config::POST_EDIT_SUBTITLE;
 			$this->content = $this->build(
 				'v_edit',
 				[
@@ -176,7 +177,7 @@ class PostController extends BaseController
 	public function deleteAction()
 	{
 		if (!Auth::check()) {
-			$this->redirect(ROOT);
+			$this->redirect(Config::ROOT);
 		}
 
 		$id = $this->request->getGET('id');
@@ -195,7 +196,7 @@ class PostController extends BaseController
 				]
 			);
 
-			$this->redirect(ROOT);
+			$this->redirect(Config::ROOT);
 		}
 	}
 }

@@ -2,7 +2,6 @@
 
 namespace core;
 
-
 class Request
 {
 	const METHOD_GET = 'GET';

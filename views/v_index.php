@@ -1,8 +1,12 @@
+<?php
+	use core\Config;
+?>
+
 <h2 class="icon fa-file-text-o">Недавние посты</h2>
 <?php foreach ($posts as $post): ?>
 	<article class="box excerpt">
 		<a href="#" class="image left">
-			<img src="<?=ROOT?>assets/images/pic0<?=mt_rand(4,6)?>.jpg" alt="" />
+			<img src="<?=Config::ROOT?>assets/images/pic0<?=mt_rand(4,6)?>.jpg" alt="" />
 		</a>
 		<div>
 			<header>
@@ -10,7 +14,7 @@
 					<?=$post['date']?>
 				</span>
 				<h3>
-					<a href="<?=ROOT?>post/<?=$post['id']?>">
+					<a href="<?=Config::ROOT?>post/<?=$post['id']?>">
 						<?=$post['title']?>
 					</a>
 				</h3>
@@ -28,4 +32,4 @@
 	</article>
 <?php endforeach; ?>
 
-<a class="button medium icon fa-sign-in" href="<?=ROOT?>user/login">Войти</a>
+<a class="button medium icon fa-sign-in" href="<?=Config::ROOT?>user/login">Войти</a>

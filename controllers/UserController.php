@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use core\Config;
 use models\Auth;
 
 class UserController extends BaseController
@@ -18,7 +19,7 @@ class UserController extends BaseController
 			$login = $this->request->getPOST('login');
 			$password = $this->request->getPOST('password');
 
-			if ($login === ADMIN_LOGIN && $password === ADMIN_PASSWORD) {
+			if ($login === Config::ADMIN_LOGIN && $password === Config::ADMIN_PASSWORD) {
 				Auth::setSessionParams();
 
 				if ($this->request->getPOST('remember') !== null) {
@@ -29,14 +30,14 @@ class UserController extends BaseController
 				$login = '';
 				$password = '';
 
-				header("Location: " . ROOT);
+				header("Location: " . Config::ROOT);
 				exit();
 			} else {
 				$msg = self::MSG_LOGIN_ERR;
 			}
 		}
 
-		$this->title .= LOGIN_SUBTITLE;
+		$this->title .= Config::LOGIN_SUBTITLE;
 
 		$this->content = $this->build(
 			'v_login',
@@ -52,7 +53,7 @@ class UserController extends BaseController
 	{
 		Auth::logOut();
 
-		header("Location: " . ROOT);
+		header("Location: " . Config::ROOT);
 		exit();
 	}
 }

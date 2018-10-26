@@ -4,8 +4,7 @@ session_start();
 
 // error_reporting(E_ALL);
 
-include_once __DIR__ . '/core/config.php';
-
+use core\Config;
 use core\DBConnector;
 use models\PostsModel;
 use core\Core;
@@ -36,7 +35,7 @@ $uri = $_SERVER['REQUEST_URI'];
 $uriParts = explode('/', $uri);
 unset($uriParts[0]);
 
-if ($uriParts[1] === str_replace('/', '', ROOT)) {
+if ($uriParts[1] === str_replace('/', '', Config::ROOT)) {
 	unset($uriParts[1]);
 }
 
@@ -108,3 +107,5 @@ try {
 }
 
 $controller->render();
+
+// TODO: создать класс Application

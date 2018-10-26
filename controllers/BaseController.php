@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use core\Config;
 use core\Request;
 use core\Exceptions\ErrorNotFoundException;
 
@@ -13,7 +14,7 @@ class BaseController
 
 	public function __construct(Request $request)
 	{
-		$this->title = SITE_TITLE;
+		$this->title = Config::SITE_TITLE;
 		$this->content = '';
 		$this->request = $request;
 	}
@@ -36,8 +37,8 @@ class BaseController
 
 	public function errorHandler($message, $trace)
 	{
-		$msg = ENVIROMENT_DEV ? $message . '<br><br>Trace:<br>' . $trace : $message;
-		$this->title .= ERR_SUBTITLE;
+		$msg = Config::ENVIROMENT_DEV ? $message . '<br><br>Trace:<br>' . $trace : $message;
+		$this->title .= Config::ERR_SUBTITLE;
 		$this->content = $this->build(
 			'v_404_inline',
 			[
@@ -49,7 +50,7 @@ class BaseController
 	public function error404Handler()
 	{
 		header("HTTP/1.0 404 Not Found");
-		$this->redirect(ROOT . "views/v_403.php");
+		$this->redirect(Config::ROOT . "views/v_403.php");
 	}
 
 	protected function redirect($uri)

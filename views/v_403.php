@@ -1,5 +1,5 @@
 <?php
-	include_once __DIR__ . '/../core/config.php';
+	use core\Config;
 ?>
 
 <!DOCTYPE html>
@@ -10,10 +10,10 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
 	<!-- Делает редирект на индекс через 5 секунд -->
-	<meta http-equiv="refresh" content="5;URL=<?=ROOT?>">
+	<meta http-equiv="refresh" content="5;URL=<?=Config::ROOT?>">
 	
 	<title>404</title>
-	<link rel="stylesheet" href="<?=ROOT?>/assets/css/main.css" />
+	<link rel="stylesheet" href="<?=Config::ROOT?>/assets/css/main.css" />
 </head>
 <body>
 		<header id="header-wrapper" class="header-403">

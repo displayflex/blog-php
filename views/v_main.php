@@ -1,10 +1,14 @@
+<?php
+	use core\Config;
+?>
+
 <!DOCTYPE HTML>
 <html>
 	<head>
 		<title><?=$title?></title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="<?=ROOT?>assets/css/main.css" />
+		<link rel="stylesheet" href="<?=Config::ROOT?>assets/css/main.css" />
 	</head>
 	<body class="right-sidebar is-preload">
 		<div id="page-wrapper">
@@ -18,7 +22,7 @@
 								<div class="inner">
 
 									<!-- Logo -->
-										<h1><a href="<?=ROOT?>" id="logo">PHP Блог</a></h1>
+										<h1><a href="<?=Config::ROOT?>" id="logo">PHP Блог</a></h1>
 
 									<!-- Nav -->
 										<nav id="nav">
@@ -73,7 +77,7 @@
 											<section class="box spotlight">
 												<h2 class="icon fa-file-text-o">Spotlight</h2>
 												<article>
-													<a href="#" class="image featured"><img src="<?=ROOT?>assets/images/pic07.jpg" alt=""></a>
+													<a href="#" class="image featured"><img src="<?=Config::ROOT?>assets/images/pic07.jpg" alt=""></a>
 													<header>
 														<h3><a href="#">Neural Implants</a></h3>
 														<p>The pros and cons. Mostly cons.</p>
@@ -179,12 +183,12 @@
 		</div>
 
 		<!-- Scripts -->
-			<script src="<?=ROOT?>assets/js/jquery.min.js"></script>
-			<script src="<?=ROOT?>assets/js/jquery.dropotron.min.js"></script>
-			<script src="<?=ROOT?>assets/js/browser.min.js"></script>
-			<script src="<?=ROOT?>assets/js/breakpoints.min.js"></script>
-			<script src="<?=ROOT?>assets/js/util.js"></script>
-			<script src="<?=ROOT?>assets/js/main.js"></script>
+			<script src="<?=Config::ROOT?>assets/js/jquery.min.js"></script>
+			<script src="<?=Config::ROOT?>assets/js/jquery.dropotron.min.js"></script>
+			<script src="<?=Config::ROOT?>assets/js/browser.min.js"></script>
+			<script src="<?=Config::ROOT?>assets/js/breakpoints.min.js"></script>
+			<script src="<?=Config::ROOT?>assets/js/util.js"></script>
+			<script src="<?=Config::ROOT?>assets/js/main.js"></script>
 
 	</body>
 </html>

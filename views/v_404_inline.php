@@ -1,2 +1,6 @@
+<?php
+	use core\Config;
+?>
+
 <p class="warning-msg"><?=$msg;?></p>
-<a href="<?=ROOT?>"><i class="fa fa-level-up"></i> На главную</a>
+<a href="<?=Config::ROOT?>"><i class="fa fa-level-up"></i> На главную</a>
