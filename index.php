@@ -6,7 +6,7 @@ session_start();
 
 use core\Config;
 use core\DBConnector;
-use models\PostsModel;
+use models\PostModel;
 use core\Core;
 use core\Request;
 use core\Exceptions\ErrorNotFoundException;
@@ -74,17 +74,22 @@ try {
 		$id = isset($uriParts[2]) && ctype_digit($uriParts[2]) ? trim($uriParts[2]) : null;
 	}
 
+	// Убирает все знаки "-" в $action и делает каждое слово кроме первого с заглавной буквы
+	if (mb_strpos($action, '-')) {
+		$action = explode('-', $action);
+
+		for ($i = 1; $i < count($action); $i++) {
+			$action[$i] = ucfirst($action[$i]);
+		}
+
+		$action = implode('', $action);
+	}
+
 	$controller = sprintf('controllers\%sController', $controller);
 	$action = sprintf('%sAction', $action);
 
-	if ($controller === 'controllers\ErrorController') {
-		$action = 'err403Action';
-		$id = null;
-	} else {
-		if (!method_exists($controller, $action) || (isset($uriParts[2]) && !ctype_digit($uriParts[2]))) {
-			$action = 'err404Action';
-			$id = null;
-		}
+	if (!method_exists($controller, $action) || (isset($uriParts[2]) && !ctype_digit($uriParts[2]))) {
+		throw new ErrorNotFoundException();
 	}
 
 	if ($id !== null) {
@@ -108,4 +113,8 @@ try {
 
 $controller->render();
 
-// TODO: создать класс Application
+// TODO: создать класс Application (последний урок 2ого модуля)
+// FIXME: разделить поле логина с полем статей
+// TODO: создать класс/классы для ввода данных в куки и сессии
+// FIXME: разбить Validator на классы (начало 5ого урока)
+// TODO: добавить логирование

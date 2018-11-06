@@ -3,44 +3,89 @@
 namespace controllers;
 
 use core\Config;
-use models\Auth;
+use core\DBConnector;
+use core\DBDriver;
+use core\Validator;
+use models\UserModel;
+use models\SessionModel;
+use core\User;
+use core\Exceptions\ModelIncorrectDataException;
+use core\Exceptions\ValidatorException;
+use core\Exceptions\UnauthorizedException;
 
 class UserController extends BaseController
 {
-	const MSG_LOGIN_ERR = 'Неверный логин или пароль!';
+	const MSG_WRONG_LOGIN_DATA = 'Неверное имя пользователя или пароль!';
 
-	public function loginAction()
+	public function signUpAction()
 	{
-		if (Auth::check()) {
-			Auth::logOut();
+		if ($this->request->isPOST()) {
+			$login = htmlspecialchars($this->request->getPost('login'));
+			$password = htmlspecialchars($this->request->getPost('password'));
+			$submitPassword = htmlspecialchars($this->request->getPost('submitPassword'));
+			$msg = '';
+			$userModel = new UserModel(
+				new DBDriver(DBConnector::getConnect()),
+				new Validator()
+			);
+			$sessionModel = new SessionModel(
+				new DBDriver(DBConnector::getConnect()),
+				new Validator()
+			);
+			$user = new User($userModel, $sessionModel);
+
+			try {
+				$user->signUp($this->request->getPOST());
+				$this->redirect(Config::ROOT);
+			} catch (ValidatorException $e) {
+				$msg = $e->getMessage();
+			} catch (ModelIncorrectDataException $e) {
+				$msg = $this->getErrorsAsString($e->getErrors());
+			}
 		}
 
+		$this->title .= Config::REGISTRATION_SUBTITLE;
+		$this->content = $this->build(
+			'v_sign-up',
+			[
+				'msg' => $msg,
+				'login' => $login,
+				'password' => $password,
+				'submitPassword' => $submitPassword
+			]
+		);
+	}
+
+	public function signInAction()
+	{
 		if ($this->request->isPOST()) {
-			$login = $this->request->getPOST('login');
-			$password = $this->request->getPOST('password');
+			$login = htmlspecialchars($this->request->getPost('login'));
+			$password = htmlspecialchars($this->request->getPost('password'));
+			$msg = '';
+			$userModel = new UserModel(
+				new DBDriver(DBConnector::getConnect()),
+				new Validator()
+			);
+			$sessionModel = new SessionModel(
+				new DBDriver(DBConnector::getConnect()),
+				new Validator()
+			);
+			$user = new User($userModel, $sessionModel);
+			$user->logOut();
 
-			if ($login === Config::ADMIN_LOGIN && $password === Config::ADMIN_PASSWORD) {
-				Auth::setSessionParams();
-
-				if ($this->request->getPOST('remember') !== null) {
-					Auth::setCookieParams();
-				}
-
-				$msg = '';
-				$login = '';
-				$password = '';
-
-				header("Location: " . Config::ROOT);
-				exit();
-			} else {
-				$msg = self::MSG_LOGIN_ERR;
+			try {
+				$user->signIn($this->request->getPOST());
+				$this->redirect(Config::ROOT);
+			} catch (ModelIncorrectDataException $e) {
+				$msg = $this->getErrorsAsString($e->getErrors());
+			} catch (UnauthorizedException $e) {
+				$msg = $e->getMessage();
 			}
 		}
 
 		$this->title .= Config::LOGIN_SUBTITLE;
-
 		$this->content = $this->build(
-			'v_login',
+			'v_sign-in',
 			[
 				'msg' => $msg,
 				'login' => $login,
@@ -49,11 +94,18 @@ class UserController extends BaseController
 		);
 	}
 
-	public function logoutAction()
+	public function signOutAction()
 	{
-		Auth::logOut();
-
-		header("Location: " . Config::ROOT);
-		exit();
+		$userModel = new UserModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$sessionModel = new SessionModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$user = new User($userModel, $sessionModel);
+		$user->logOut();
+		$this->redirect(Config::ROOT);
 	}
 }

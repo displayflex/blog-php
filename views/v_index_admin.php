@@ -40,4 +40,6 @@
 <?php endforeach; ?>
 
 <a class="button alt icon fa-file-o" href="<?=Config::ROOT?>post/add">Добавить</a>
-<a class="button alt icon fa-sign-out" href="<?=Config::ROOT?>user/logout">Выйти</a>
+<div class="button-wrapper">
+	<a class="button alt icon fa-sign-out" href="<?=Config::ROOT?>user/sign-out">Выйти</a>
+</div>

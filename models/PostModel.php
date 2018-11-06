@@ -5,9 +5,9 @@ namespace models;
 use core\DBDriver;
 use core\Validator;
 
-class PostsModel extends BaseModel
+class PostModel extends BaseModel
 {
-	const TABLE_POSTS = 'news';
+	const TABLE_NAME = 'news';
 
 	protected $schema = [
 		'id' => [
@@ -33,7 +33,7 @@ class PostsModel extends BaseModel
 
 	public function __construct(DBDriver $db, Validator $validator)
 	{
-		parent::__construct($db, $validator, self::TABLE_POSTS);
+		parent::__construct($db, $validator, self::TABLE_NAME);
 		$this->validator->setRules($this->schema);
 	}
 }

@@ -43,6 +43,13 @@ class Validator
 				$this->errors[$name][] = sprintf('Field [%s] should not be empty!', $name);
 			}
 
+			// проверка на то что поле не содержит пробелы
+			if (isset($rulesList['notContainsSpaces']) && $rulesList['notContainsSpaces']) {
+				if (mb_strpos($fields[$name], ' ')) {
+					$this->errors[$name][] = sprintf('Field [%s] should not contain empty symbols!', $name);
+				}
+			}
+
 			// проверка длины пришедших данных
 			if (isset($rulesList['length']) && !$this->isLengthMatch($fields[$name], $rulesList['length'])) {
 				if (is_array($rulesList['length'])) {
@@ -66,12 +73,10 @@ class Validator
 			}
 
 			if (empty($this->errors[$name])) {
-				if (isset($rulesList['type']) && $rulesList['type'] === self::TYPE_STRING) {
-					$this->clean[$name] = trim(htmlspecialchars($fields[$name]));
-				} elseif (isset($rulesList['type']) && $rulesList['type'] === self::TYPE_INTEGER) {
+				if (isset($rulesList['type']) && $rulesList['type'] === self::TYPE_INTEGER) {
 					$this->clean[$name] = (int)$fields[$name];
 				} else {
-					$this->clean[$name] = $fields[$name];
+					$this->clean[$name] = trim(htmlspecialchars($fields[$name]));
 				}
 			}
 		}
@@ -79,6 +84,8 @@ class Validator
 		if (empty($this->errors)) {
 			$this->success = true;
 		}
+
+		return $this->clean;
 	}
 
 	public function setRules(array $rules)

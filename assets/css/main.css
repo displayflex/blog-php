@@ -2433,3 +2433,17 @@ select, textarea {
 	color: rgb(219, 90, 90);
 	font-size: 17px;
 }
+
+.spotlight {
+	margin-top: 140px;
+}
+
+.article-list {
+	position: relative;
+}
+
+.button-wrapper {
+	position: absolute;
+	top: -57px;
+	right: -323px;
+}

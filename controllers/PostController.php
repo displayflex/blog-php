@@ -4,27 +4,40 @@ namespace controllers;
 
 use core\Config;
 use core\DBConnector;
-use models\PostsModel;
+use models\PostModel;
+use models\UserModel;
+use models\SessionModel;
 use core\DBDriver;
-use models\Auth;
 use core\Core;
 use core\Validator;
+use core\User;
 use core\Exceptions\ModelIncorrectDataException;
 use core\Exceptions\ErrorNotFoundException;
 
 class PostController extends BaseController
 {
 	const MSG_ERROR = 'Ошибка 404!';
+	const REVERSE_SORT_BY_DATE_OPTION = 'ORDER BY `date` DESC';
 
 	public function indexAction()
 	{
-		$postsModel = new PostsModel(
+		$PostModel = new PostModel(
 			new DBDriver(DBConnector::getConnect()),
 			new Validator()
 		);
-		$posts = $postsModel->getAll();
+		$userModel = new UserModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$sessionModel = new SessionModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$user = new User($userModel, $sessionModel);
+		$posts = $PostModel->getAll(self::REVERSE_SORT_BY_DATE_OPTION);
+		$isAuth = $user->isAuth($this->request);
 
-		if (Auth::check()) {
+		if ($isAuth) {
 			$template = 'v_index_admin';
 		} else {
 			$template = 'v_index';
@@ -47,11 +60,11 @@ class PostController extends BaseController
 			$this->redirect(Config::ROOT);
 		}
 
-		$postsModel = new PostsModel(
+		$PostModel = new PostModel(
 			new DBDriver(DBConnector::getConnect()),
 			new Validator()
 		);
-		$post = $postsModel->getOne($id);
+		$post = $PostModel->getOne($id);
 
 		if (!$post) {
 			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
@@ -68,7 +81,18 @@ class PostController extends BaseController
 
 	public function addAction()
 	{
-		if (!Auth::check()) {
+		$userModel = new UserModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$sessionModel = new SessionModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$user = new User($userModel, $sessionModel);
+		$isAuth = $user->isAuth($this->request);
+
+		if (!$isAuth) {
 			$this->redirect(Config::ROOT);
 		}
 
@@ -77,19 +101,18 @@ class PostController extends BaseController
 			$content = trim(htmlspecialchars($this->request->getPOST('content')));
 
 			try {
-				$postsModel = new PostsModel(
+				$PostModel = new PostModel(
 					new DBDriver(DBConnector::getConnect()),
 					new Validator()
 				);
-				$id = $postsModel->addOne([
+				$id = $PostModel->addOne([
 					'title' => $title,
 					'content' => $content
 				]);
 
 				$this->redirect(sprintf('%spost/%s', Config::ROOT, $id));
 			} catch (ModelIncorrectDataException $e) {
-				$errors = array_reduce($e->getErrors(), 'array_merge', array());
-				$msg = implode('<br>', $errors);
+				$msg = $this->getErrorsAsString($e->getErrors());
 			}
 
 		} else {
@@ -111,7 +134,18 @@ class PostController extends BaseController
 
 	public function editAction()
 	{
-		if (!Auth::check()) {
+		$userModel = new UserModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$sessionModel = new SessionModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$user = new User($userModel, $sessionModel);
+		$isAuth = $user->isAuth($this->request);
+
+		if (!$isAuth) {
 			$this->redirect(Config::ROOT);
 		}
 
@@ -122,11 +156,11 @@ class PostController extends BaseController
 		if (!Core::checkId($id) || $id === null || $id == '') {
 			$err404 = true;
 		} else {
-			$postsModel = new PostsModel(
+			$PostModel = new PostModel(
 				new DBDriver(DBConnector::getConnect()),
 				new Validator()
 			);
-			$post = $postsModel->getOne($id);
+			$post = $PostModel->getOne($id);
 
 			if (!$post) {
 				$err404 = true;
@@ -140,7 +174,7 @@ class PostController extends BaseController
 				$content = trim(htmlspecialchars($this->request->getPOST('content')));
 
 				try {
-					$postsModel->updateOne(
+					$PostModel->updateOne(
 						[
 							'title' => $title,
 							'content' => $content
@@ -153,8 +187,7 @@ class PostController extends BaseController
 
 					$this->redirect(Config::ROOT);
 				} catch (ModelIncorrectDataException $e) {
-					$errors = array_reduce($e->getErrors(), 'array_merge', array());
-					$msg = implode('<br>', $errors);
+					$msg = $this->getErrorsAsString($e->getErrors());
 				}
 			}
 		}
@@ -176,7 +209,18 @@ class PostController extends BaseController
 
 	public function deleteAction()
 	{
-		if (!Auth::check()) {
+		$userModel = new UserModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$sessionModel = new SessionModel(
+			new DBDriver(DBConnector::getConnect()),
+			new Validator()
+		);
+		$user = new User($userModel, $sessionModel);
+		$isAuth = $user->isAuth($this->request);
+
+		if (!$isAuth) {
 			$this->redirect(Config::ROOT);
 		}
 
@@ -185,11 +229,11 @@ class PostController extends BaseController
 		if ($id === null || $id == '' || !Core::checkId($id)) {
 			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
 		} else {
-			$postsModel = new PostsModel(
+			$PostModel = new PostModel(
 				new DBDriver(DBConnector::getConnect()),
 				new Validator()
 			);
-			$post = $postsModel->deleteOne(
+			$post = $PostModel->deleteOne(
 				'id=:id',
 				[
 					'id' => $id

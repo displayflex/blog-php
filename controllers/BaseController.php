@@ -53,6 +53,12 @@ class BaseController
 		$this->redirect(Config::ROOT . "views/v_403.php");
 	}
 
+	public function getErrorsAsString(array $errors)
+	{
+		$mergedErrors = array_reduce($errors, 'array_merge', array());
+		return implode('<br>', $mergedErrors);
+	}
+
 	protected function redirect($uri)
 	{
 		header(sprintf('Location: %s', $uri));

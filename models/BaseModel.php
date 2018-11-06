@@ -8,10 +8,8 @@ use core\Exceptions\ModelIncorrectDataException;
 
 abstract class BaseModel
 {
-	const SORT_COLUMN = 'date';
-
-	protected $db;
 	protected $validator;
+	protected $db;
 	protected $table;
 
 	public function __construct(DBDriver $db, Validator $validator, $table)
@@ -21,9 +19,9 @@ abstract class BaseModel
 		$this->table = $table;
 	}
 
-	public function getAll($order = self::SORT_COLUMN)
+	public function getAll($option = '')
 	{
-		$sql = sprintf("SELECT * FROM %s ORDER BY %s DESC", $this->table, $order);
+		$sql = sprintf("SELECT * FROM %s %s", $this->table, $option);
 
 		return $this->db->select($sql);
 	}
@@ -35,23 +33,31 @@ abstract class BaseModel
 		return $this->db->select($sql, ['id' => $id], DBDriver::FETCH_ONE);
 	}
 
-	public function addOne(array $params)
+	public function addOne(array $params, $needValidation = true)
 	{
-		$this->validator->execute($params);
+		if ($needValidation) {
+			$this->validator->execute($params);
+	
+			if (!$this->validator->success) {
+				throw new ModelIncorrectDataException($this->validator->errors);
+			}
 
-		if (!$this->validator->success) {
-			throw new ModelIncorrectDataException($this->validator->errors);
+			$params = $this->validator->clean;
 		}
 
 		return $this->db->insert($this->table, $params);
 	}
 
-	public function updateOne(array $params, $where, array $whereParams)
+	public function updateOne(array $params, $where, array $whereParams, $needValidation = true)
 	{
-		$this->validator->execute($params);
+		if ($needValidation) {
+			$this->validator->execute($params);
+	
+			if (!$this->validator->success) {
+				throw new ModelIncorrectDataException($this->validator->errors);
+			}
 
-		if (!$this->validator->success) {
-			throw new ModelIncorrectDataException($this->validator->errors);
+			$params = $this->validator->clean;
 		}
 
 		return $this->db->update($this->table, $params, $where, $whereParams);

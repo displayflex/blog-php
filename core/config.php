@@ -4,7 +4,7 @@ namespace core;
 
 class Config
 {
-	const ROOT = '/lesson8/';
+	const ROOT = '/lesson3/';
 
 	/**
 	 * true - development mode
@@ -30,8 +30,9 @@ class Config
 	const ERR_SUBTITLE = ' | Error';
 	const ERR404_SUBTITLE = ' | 404';
 	const LOGIN_SUBTITLE = ' | Войти на сайт';
+	const REGISTRATION_SUBTITLE = ' | Регистрация';
 
-	const ADMIN_LOGIN = 'admin';
-	const ADMIN_PASSWORD = 'qwerty';
+	const ADMIN_LOGIN = 'admin'; // TODO: delete this?
+	const ADMIN_PASSWORD = 'qwerty'; // TODO: delete this?
 	const SALT = "s;fa47wyt";
 }
