@@ -2434,16 +2434,6 @@ select, textarea {
 	font-size: 17px;
 }
 
-.spotlight {
-	margin-top: 140px;
-}
-
-.article-list {
-	position: relative;
-}
-
-.button-wrapper {
-	position: absolute;
-	top: -57px;
-	right: -323px;
+.user-menu {
+	margin-bottom: 65px;
 }

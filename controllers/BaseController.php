@@ -30,7 +30,8 @@ class BaseController
 			'v_main',
 			[
 				'title' => $this->title,
-				'content' => $this->content
+				'content' => $this->content,
+				'userMenu' => $this->userMenu ?? null
 			]
 		);
 	}

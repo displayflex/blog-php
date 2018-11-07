@@ -16,7 +16,7 @@ class PostModel extends BaseModel
 		],
 		'title' => [
 			'type' => Validator::TYPE_STRING,
-			'length' => [5, 20],
+			'length' => [4, 20],
 			'notBlank' => true,
 			'required' => true
 		],

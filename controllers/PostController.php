@@ -50,6 +50,12 @@ class PostController extends BaseController
 				'posts' => $posts
 			]
 		);
+		$this->userMenu = $this->build(
+			'v_menu-user',
+			[
+				'isAuth' => $isAuth
+			]
+		);
 	}
 
 	public function postAction()
@@ -130,6 +136,12 @@ class PostController extends BaseController
 				'msg' => $msg
 			]
 		);
+		$this->userMenu = $this->build(
+			'v_menu-user',
+			[
+				'isAuth' => $isAuth
+			]
+		);
 	}
 
 	public function editAction()
@@ -202,6 +214,12 @@ class PostController extends BaseController
 					'title' => $title,
 					'content' => $content,
 					'msg' => $msg
+				]
+			);
+			$this->userMenu = $this->build(
+				'v_menu-user',
+				[
+					'isAuth' => $isAuth
 				]
 			);
 		}
