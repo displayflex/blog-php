@@ -6,6 +6,8 @@ class Config
 {
 	const ROOT = '/lesson3/';
 
+	const LOG_DIR = './logs';
+
 	/**
 	 * true - development mode
 	 * false - production mode

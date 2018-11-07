@@ -2,13 +2,14 @@
 
 namespace core\Exceptions;
 
-class ModelIncorrectDataException extends \Exception
+class ModelIncorrectDataException extends BaseException
 {
 	private $errors;
 
 	public function __construct($errors)
 	{
-		parent::__construct('');
+		$this->dest .= '/ModelIncorrectData';
+		parent::__construct();
 		$this->errors = $errors;
 	}
 

@@ -37,7 +37,7 @@ class UserController extends BaseController
 				$user->signUp($this->request->getPOST());
 				$this->redirect(Config::ROOT);
 			} catch (ValidatorException $e) {
-				$msg = $e->getMessage();
+				$msg = $e->getError();
 			} catch (ModelIncorrectDataException $e) {
 				$msg = $this->getErrorsAsString($e->getErrors());
 			}
@@ -77,7 +77,7 @@ class UserController extends BaseController
 			} catch (ModelIncorrectDataException $e) {
 				$msg = $this->getErrorsAsString($e->getErrors());
 			} catch (UnauthorizedException $e) {
-				$msg = $e->getMessage();
+				$msg = $e->getError();
 			}
 		}
 

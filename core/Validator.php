@@ -21,7 +21,7 @@ class Validator
 		if (!$this->rules) {
 			throw new ValidatorException('Rules for validation not found');
 		}
-		
+
 		foreach ($this->rules as $name => $rulesList) {
 			// првоерка на обязательные поля
 			if (!isset($fields[$name]) && isset($rulesList['required']) && $rulesList['required']) {
@@ -45,7 +45,7 @@ class Validator
 
 			// проверка на то что поле не содержит пробелы
 			if (isset($rulesList['notContainsSpaces']) && $rulesList['notContainsSpaces']) {
-				if (mb_strpos($fields[$name], ' ')) {
+				if (mb_strpos($fields[$name], ' ') !== false) {
 					$this->errors[$name][] = sprintf('Field [%s] should not contain empty symbols!', $name);
 				}
 			}
