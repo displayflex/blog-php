@@ -23,7 +23,6 @@ class UserController extends BaseController
 			$login = htmlspecialchars($this->request->getPost('login'));
 			$password = htmlspecialchars($this->request->getPost('password'));
 			$submitPassword = htmlspecialchars($this->request->getPost('submitPassword'));
-			$msg = '';
 			$userModel = new UserModel(
 				new DBDriver(DBConnector::getConnect()),
 				new Validator()
@@ -48,10 +47,10 @@ class UserController extends BaseController
 		$this->content = $this->build(
 			'v_sign-up',
 			[
-				'msg' => $msg,
-				'login' => $login,
-				'password' => $password,
-				'submitPassword' => $submitPassword
+				'msg' => $msg ?? '',
+				'login' => $login ?? '',
+				'password' => $password ?? '',
+				'submitPassword' => $submitPassword ?? ''
 			]
 		);
 	}
@@ -61,7 +60,6 @@ class UserController extends BaseController
 		if ($this->request->isPOST()) {
 			$login = htmlspecialchars($this->request->getPost('login'));
 			$password = htmlspecialchars($this->request->getPost('password'));
-			$msg = '';
 			$userModel = new UserModel(
 				new DBDriver(DBConnector::getConnect()),
 				new Validator()
@@ -87,9 +85,9 @@ class UserController extends BaseController
 		$this->content = $this->build(
 			'v_sign-in',
 			[
-				'msg' => $msg,
-				'login' => $login,
-				'password' => $password
+				'msg' => $msg ?? '',
+				'login' => $login ?? '',
+				'password' => $password ?? ''
 			]
 		);
 	}

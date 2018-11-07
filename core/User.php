@@ -17,11 +17,15 @@ class User
 
 	private $userModel;
 	private $sessionModel;
+	private $session;
+	private $cookie;
 
 	public function __construct(UserModel $userModel, SessionModel $sessionModel)
 	{
 		$this->userModel = $userModel;
 		$this->sessionModel = $sessionModel;
+		$this->session = new Session();
+		$this->cookie = new Cookie();
 	}
 
 	public function signUp(array $fields)
@@ -52,7 +56,7 @@ class User
 		}
 
 		$sid = $this->generateSid();
-		$this->setSessionParams($sid);
+		$this->session->set('sid', $sid);
 		$this->sessionModel->setDBSessionParams([
 			'id_user' => $user['id'],
 			'sid' => $sid,
@@ -99,7 +103,7 @@ class User
 
 			if ($user && $password === $user['password']) {
 				$sid = $this->generateSid();
-				$this->setSessionParams($sid);
+				$this->session->set('sid', $sid);
 
 				return true;
 			}
@@ -125,21 +129,16 @@ class User
 		return $sid;
 	}
 
-	protected function setSessionParams($sid)
-	{
-		$_SESSION['sid'] = $sid;
-	}
-
 	protected function setCookieParams(array $params)
 	{
-		setcookie('login', $params['login'], time() + 3600 * 24 * 7, '/');
-		setcookie('password', $this->userModel->getHash($params['password']), time() + 3600 * 24 * 7, '/');
+		$this->cookie->set('login', $params['login']);
+		$this->cookie->set('password', $this->userModel->getHash($params['password']));
 	}
 
 	public function logOut()
 	{
-		unset($_SESSION['sid']);
-		setcookie('login', '', 1, '/');
-		setcookie('password', '', 1, '/');
+		$this->session->delete('sid');
+		$this->cookie->delete('login');
+		$this->cookie->delete('password');
 	}
 }

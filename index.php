@@ -2,7 +2,7 @@
 
 session_start();
 
-// error_reporting(E_ALL);
+error_reporting(E_ALL);
 
 use core\Config;
 use core\DBConnector;
@@ -115,6 +115,5 @@ $controller->render();
 
 // TODO: создать класс Application (последний урок 2ого модуля)
 // FIXME: разделить поле логина с полем статей
-// TODO: создать класс/классы для ввода данных в куки и сессии
 // FIXME: разбить Validator на классы (начало 5ого урока)
 // TODO: добавить логирование
