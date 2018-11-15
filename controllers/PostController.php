@@ -13,6 +13,9 @@ use core\Validator;
 use core\User;
 use core\Exceptions\ModelIncorrectDataException;
 use core\Exceptions\ErrorNotFoundException;
+use forms\PostAdd;
+use forms\PostEdit;
+use core\Forms\FormBuilder;
 
 class PostController extends BaseController
 {
@@ -21,7 +24,7 @@ class PostController extends BaseController
 
 	public function indexAction()
 	{
-		$PostModel = new PostModel(
+		$postModel = new PostModel(
 			new DBDriver(DBConnector::getConnect()),
 			new Validator()
 		);
@@ -34,7 +37,7 @@ class PostController extends BaseController
 			new Validator()
 		);
 		$user = new User($userModel, $sessionModel);
-		$posts = $PostModel->getAll(self::REVERSE_SORT_BY_DATE_OPTION);
+		$posts = $postModel->getAll(self::REVERSE_SORT_BY_DATE_OPTION);
 		$isAuth = $user->isAuth($this->request);
 
 		if ($isAuth) {
@@ -66,11 +69,11 @@ class PostController extends BaseController
 			$this->redirect(Config::ROOT);
 		}
 
-		$PostModel = new PostModel(
+		$postModel = new PostModel(
 			new DBDriver(DBConnector::getConnect()),
 			new Validator()
 		);
-		$post = $PostModel->getOne($id);
+		$post = $postModel->getOne($id);
 
 		if (!$post) {
 			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
@@ -102,28 +105,23 @@ class PostController extends BaseController
 			$this->redirect(Config::ROOT);
 		}
 
+		$form = new PostAdd();
+		$formBuilder = new FormBuilder($form);
+
 		if ($this->request->isPOST()) {
-			$title = trim(htmlspecialchars($this->request->getPOST('title')));
-			$content = trim(htmlspecialchars($this->request->getPOST('content')));
+			$postModel = new PostModel(
+				new DBDriver(DBConnector::getConnect()),
+				new Validator()
+			);
 
 			try {
-				$PostModel = new PostModel(
-					new DBDriver(DBConnector::getConnect()),
-					new Validator()
-				);
-				$id = $PostModel->addOne([
-					'title' => $title,
-					'content' => $content
-				]);
-
+				$id = $postModel->addOne($form->handleRequest($this->request), true);
 				$this->redirect(sprintf('%spost/%s', Config::ROOT, $id));
 			} catch (ModelIncorrectDataException $e) {
 				$msg = $this->getErrorsAsString($e->getErrors());
+				// $form->addErrors($e->getErrors());
 			}
-
 		} else {
-			$title = '';
-			$content = '';
 			$msg = '';
 		}
 
@@ -131,9 +129,8 @@ class PostController extends BaseController
 		$this->content = $this->build(
 			'v_add',
 			[
-				'title' => $title,
-				'content' => $content,
-				'msg' => $msg
+				'msg' => $msg,
+				'formBuilder' => $formBuilder
 			]
 		);
 		$this->userMenu = $this->build(
@@ -168,38 +165,39 @@ class PostController extends BaseController
 		if (!Core::checkId($id) || $id === null || $id == '') {
 			$err404 = true;
 		} else {
-			$PostModel = new PostModel(
+			$postModel = new PostModel(
 				new DBDriver(DBConnector::getConnect()),
 				new Validator()
 			);
-			$post = $PostModel->getOne($id);
+			$post = $postModel->getOne($id);
 
 			if (!$post) {
 				$err404 = true;
 			} else {
-				$title = $post['title'];
-				$content = $post['content'];
+				$form = new PostEdit([
+					'title' => $post['title'],
+					'content' => $post['content']
+				]);
+				$formBuilder = new FormBuilder($form);
 			}
 
-			if (count($_POST) > 0) {
+			if (count($_POST) > 0 && !$err404) {
 				$title = trim(htmlspecialchars($this->request->getPOST('title')));
 				$content = trim(htmlspecialchars($this->request->getPOST('content')));
 
 				try {
-					$PostModel->updateOne(
-						[
-							'title' => $title,
-							'content' => $content
-						],
+					$postModel->updateOne(
+						$form->handleRequest($this->request),
 						'id=:id',
 						[
 							'id' => $id
-						]
+						],
+						true
 					);
-
 					$this->redirect(Config::ROOT);
 				} catch (ModelIncorrectDataException $e) {
 					$msg = $this->getErrorsAsString($e->getErrors());
+					// $form->addErrors($e->getErrors());
 				}
 			}
 		}
@@ -211,8 +209,7 @@ class PostController extends BaseController
 			$this->content = $this->build(
 				'v_edit',
 				[
-					'title' => $title,
-					'content' => $content,
+					'formBuilder' => $formBuilder,
 					'msg' => $msg
 				]
 			);
@@ -247,11 +244,11 @@ class PostController extends BaseController
 		if ($id === null || $id == '' || !Core::checkId($id)) {
 			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
 		} else {
-			$PostModel = new PostModel(
+			$postModel = new PostModel(
 				new DBDriver(DBConnector::getConnect()),
 				new Validator()
 			);
-			$post = $PostModel->deleteOne(
+			$post = $postModel->deleteOne(
 				'id=:id',
 				[
 					'id' => $id

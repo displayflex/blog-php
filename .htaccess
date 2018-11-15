@@ -19,4 +19,4 @@ RewriteRule .* index.php?chpu=$0 [QSA]
 </FilesMatch>
 
 # Перенаправляет на страницу v_403.php в случае ошибки 403
-ErrorDocument 403 http://%{HTTP_HOST}/lesson3/views/v_403.php
+ErrorDocument 403 http://%{HTTP_HOST}/lesson6/views/v_403.php

@@ -2437,3 +2437,28 @@ select, textarea {
 .user-menu {
 	margin-bottom: 65px;
 }
+
+.input-error ~ div {
+	color: rgb(219, 90, 90);
+	/* padding: 5px 5px 5px 25px; */
+	padding-left: 25px;
+	margin-bottom: 5px;
+}
+
+.input-error ~ div:last-child {
+	margin-bottom: 10px;
+}
+
+.form-item input {
+	margin-bottom: 10px;
+}
+
+.form-item input[type="submit"] {
+	margin-top: 15px;
+}
+
+.form-item label {
+	font-weight: 400;
+	text-transform: none;
+	font-size: 14px;
+}

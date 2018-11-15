@@ -4,7 +4,7 @@ namespace core;
 
 class Config
 {
-	const ROOT = '/lesson3/';
+	const ROOT = '/lesson6/';
 
 	const LOG_DIR = './logs';
 
@@ -36,5 +36,6 @@ class Config
 
 	const ADMIN_LOGIN = 'admin'; // TODO: delete this?
 	const ADMIN_PASSWORD = 'qwerty'; // TODO: delete this?
-	const SALT = "s;fa47wyt";
+	const SALT = 's;fa47wyt';
+	const SALT_FORMS = '/#@=@/';
 }

@@ -12,6 +12,9 @@ use core\User;
 use core\Exceptions\ModelIncorrectDataException;
 use core\Exceptions\ValidatorException;
 use core\Exceptions\UnauthorizedException;
+use forms\SignUp;
+use forms\SignIn;
+use core\Forms\FormBuilder;
 
 class UserController extends BaseController
 {
@@ -19,6 +22,9 @@ class UserController extends BaseController
 
 	public function signUpAction()
 	{
+		$form = new SignUp();
+		$formBuilder = new FormBuilder($form);
+
 		if ($this->request->isPOST()) {
 			$login = htmlspecialchars($this->request->getPost('login'));
 			$password = htmlspecialchars($this->request->getPost('password'));
@@ -34,12 +40,12 @@ class UserController extends BaseController
 			$user = new User($userModel, $sessionModel);
 
 			try {
-				$user->signUp($this->request->getPOST());
+				$user->signUp($form->handleRequest($this->request));
 				$this->redirect(Config::ROOT);
 			} catch (ValidatorException $e) {
 				$msg = $e->getError();
 			} catch (ModelIncorrectDataException $e) {
-				$msg = $this->getErrorsAsString($e->getErrors());
+				$form->addErrors($e->getErrors());
 			}
 		}
 
@@ -48,15 +54,16 @@ class UserController extends BaseController
 			'v_sign-up',
 			[
 				'msg' => $msg ?? '',
-				'login' => $login ?? '',
-				'password' => $password ?? '',
-				'submitPassword' => $submitPassword ?? ''
+				'formBuilder' => $formBuilder
 			]
 		);
 	}
 
 	public function signInAction()
 	{
+		$form = new SignIn();
+		$formBuilder = new FormBuilder($form);
+
 		if ($this->request->isPOST()) {
 			$login = htmlspecialchars($this->request->getPost('login'));
 			$password = htmlspecialchars($this->request->getPost('password'));
@@ -75,7 +82,7 @@ class UserController extends BaseController
 				$user->signIn($this->request->getPOST());
 				$this->redirect(Config::ROOT);
 			} catch (ModelIncorrectDataException $e) {
-				$msg = $this->getErrorsAsString($e->getErrors());
+				$form->addErrors($e->getErrors());
 			} catch (UnauthorizedException $e) {
 				$msg = $e->getError();
 			}
@@ -86,8 +93,7 @@ class UserController extends BaseController
 			'v_sign-in',
 			[
 				'msg' => $msg ?? '',
-				'login' => $login ?? '',
-				'password' => $password ?? ''
+				'formBuilder' => $formBuilder
 			]
 		);
 	}
