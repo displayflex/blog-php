@@ -33,7 +33,7 @@ class FormBuilder
 		return $inputs;
 	}
 
-	public function input(array $attributes)
+	public function input(array $attributes) // FIXME: переименовать метод или вынести textarea в отдельный метод
 	{
 		$errors = '';
 		$label = null;

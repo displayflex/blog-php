@@ -5,18 +5,21 @@ namespace controllers;
 use core\Config;
 use core\Request;
 use core\Exceptions\ErrorNotFoundException;
+use core\Container;
 
 class BaseController
 {
 	protected $title;
 	protected $content;
 	protected $request;
+	protected $container;
 
-	public function __construct(Request $request)
+	public function __construct(Request $request, Container $container)
 	{
 		$this->title = Config::SITE_TITLE;
 		$this->content = '';
 		$this->request = $request;
+		$this->container = $container;
 	}
 
 	public function __call($name, $params)

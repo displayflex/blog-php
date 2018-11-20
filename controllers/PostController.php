@@ -3,19 +3,10 @@
 namespace controllers;
 
 use core\Config;
-use core\DBConnector;
-use models\PostModel;
-use models\UserModel;
-use models\SessionModel;
-use core\DBDriver;
-use core\Core;
-use core\Validator;
-use core\User;
 use core\Exceptions\ModelIncorrectDataException;
 use core\Exceptions\ErrorNotFoundException;
 use forms\PostAdd;
 use forms\PostEdit;
-use core\Forms\FormBuilder;
 
 class PostController extends BaseController
 {
@@ -24,19 +15,8 @@ class PostController extends BaseController
 
 	public function indexAction()
 	{
-		$postModel = new PostModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$userModel = new UserModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$sessionModel = new SessionModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$user = new User($userModel, $sessionModel);
+		$postModel = $this->container->fabricate('modelsFactory', 'Post');
+		$user = $this->container->getService('user');
 		$posts = $postModel->getAll(self::REVERSE_SORT_BY_DATE_OPTION);
 		$isAuth = $user->isAuth($this->request);
 
@@ -69,10 +49,7 @@ class PostController extends BaseController
 			$this->redirect(Config::ROOT);
 		}
 
-		$postModel = new PostModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
+		$postModel = $this->container->fabricate('modelsFactory', 'Post');
 		$post = $postModel->getOne($id);
 
 		if (!$post) {
@@ -90,15 +67,7 @@ class PostController extends BaseController
 
 	public function addAction()
 	{
-		$userModel = new UserModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$sessionModel = new SessionModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$user = new User($userModel, $sessionModel);
+		$user = $this->container->getService('user');
 		$isAuth = $user->isAuth($this->request);
 
 		if (!$isAuth) {
@@ -106,13 +75,10 @@ class PostController extends BaseController
 		}
 
 		$form = new PostAdd();
-		$formBuilder = new FormBuilder($form);
+		$formBuilder = $this->container->fabricate('formBuilderFactory', $form);
 
 		if ($this->request->isPOST()) {
-			$postModel = new PostModel(
-				new DBDriver(DBConnector::getConnect()),
-				new Validator()
-			);
+			$postModel = $this->container->fabricate('modelsFactory', 'Post');
 
 			try {
 				$id = $postModel->addOne($form->handleRequest($this->request), true);
@@ -143,15 +109,7 @@ class PostController extends BaseController
 
 	public function editAction()
 	{
-		$userModel = new UserModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$sessionModel = new SessionModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$user = new User($userModel, $sessionModel);
+		$user = $this->container->getService('user');
 		$isAuth = $user->isAuth($this->request);
 
 		if (!$isAuth) {
@@ -162,13 +120,10 @@ class PostController extends BaseController
 		$msg = '';
 		$id = $this->request->getGET('id');
 
-		if (!Core::checkId($id) || $id === null || $id == '') {
+		if (!preg_match(Config::ALLOWED_IN_ID, $id) || $id === null || $id == '') {
 			$err404 = true;
 		} else {
-			$postModel = new PostModel(
-				new DBDriver(DBConnector::getConnect()),
-				new Validator()
-			);
+			$postModel = $this->container->fabricate('modelsFactory', 'Post');
 			$post = $postModel->getOne($id);
 
 			if (!$post) {
@@ -178,7 +133,7 @@ class PostController extends BaseController
 					'title' => $post['title'],
 					'content' => $post['content']
 				]);
-				$formBuilder = new FormBuilder($form);
+				$formBuilder = $this->container->fabricate('formBuilderFactory', $form);
 			}
 
 			if (count($_POST) > 0 && !$err404) {
@@ -224,15 +179,7 @@ class PostController extends BaseController
 
 	public function deleteAction()
 	{
-		$userModel = new UserModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$sessionModel = new SessionModel(
-			new DBDriver(DBConnector::getConnect()),
-			new Validator()
-		);
-		$user = new User($userModel, $sessionModel);
+		$user = $this->container->getService('user');
 		$isAuth = $user->isAuth($this->request);
 
 		if (!$isAuth) {
@@ -241,13 +188,10 @@ class PostController extends BaseController
 
 		$id = $this->request->getGET('id');
 
-		if ($id === null || $id == '' || !Core::checkId($id)) {
+		if ($id === null || $id == '' || !preg_match(Config::ALLOWED_IN_ID, $id)) {
 			throw new ErrorNotFoundException(self::MSG_ERROR, 1);
 		} else {
-			$postModel = new PostModel(
-				new DBDriver(DBConnector::getConnect()),
-				new Validator()
-			);
+			$postModel = $this->container->fabricate('modelsFactory', 'Post');
 			$post = $postModel->deleteOne(
 				'id=:id',
 				[

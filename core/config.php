@@ -4,7 +4,7 @@ namespace core;
 
 class Config
 {
-	const ROOT = '/lesson6/';
+	const ROOT = '/lesson7/';
 
 	const LOG_DIR = './logs';
 

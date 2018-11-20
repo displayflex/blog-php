@@ -7,9 +7,13 @@ error_reporting(E_ALL);
 use core\Config;
 use core\DBConnector;
 use models\PostModel;
-use core\Core;
 use core\Request;
 use core\Exceptions\ErrorNotFoundException;
+use core\Container;
+use core\Boxes\DBDriverBox;
+use core\Boxes\ModelsFactory;
+use core\Boxes\UserBox;
+use core\Boxes\FormBuilderFactory;
 
 function __autoload($classname)
 {
@@ -40,7 +44,6 @@ if ($uriParts[1] === str_replace('/', '', Config::ROOT)) {
 }
 
 $uriParts = array_values($uriParts);
-
 $end = count($uriParts) - 1;
 
 if ($uriParts[$end] == '') {
@@ -97,7 +100,12 @@ try {
 	}
 
 	$request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_SESSION, $_FILES);
-	$controller = new $controller($request);
+	$container = new Container();
+	$container->register(new DBDriverBox());
+	$container->register(new ModelsFactory());
+	$container->register(new UserBox());
+	$container->register(new FormBuilderFactory());
+	$controller = new $controller($request, $container);
 	$controller->$action();
 } catch (\Exception $e) {
 	$request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_SESSION, $_FILES);
@@ -115,3 +123,6 @@ $controller->render();
 
 // TODO: создать класс Application (последний урок 2ого модуля)
 // FIXME: разбить Validator на классы (начало 5ого урока)
+// TODO: перенести Boxes из сore в корень проекта
+// TODO: пересмотреть классы кук и сессий (как у 1gor)
+// TODO: проверить неймспейсы
