@@ -27,13 +27,13 @@ class FormBuilder
 		$inputs = [];
 
 		foreach ($this->form->getFields() as $field) {
-			$inputs[] = $this->input($field);
+			$inputs[] = $this->build($field);
 		}
 
 		return $inputs;
 	}
 
-	public function input(array $attributes) // FIXME: переименовать метод или вынести textarea в отдельный метод
+	public function build(array $attributes)
 	{
 		$errors = '';
 		$label = null;
@@ -70,7 +70,7 @@ class FormBuilder
 
 	public function inputSign()
 	{
-		return $this->input([
+		return $this->build([
 			'type' => 'hidden',
 			'name' => 'sign',
 			'value' => $this->form->getSign()

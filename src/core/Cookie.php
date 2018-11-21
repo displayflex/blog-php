@@ -2,14 +2,7 @@
 
 namespace ftwr\blogphp\core;
 
-interface iCookie
-{
-	public function get($field);
-	public function set($field, $content, $secondsAfterNow);
-	public function delete($field);
-}
-
-class Cookie implements iCookie
+class Cookie
 {
 	public function get($field)
 	{

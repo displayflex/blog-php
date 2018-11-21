@@ -3,7 +3,6 @@
 namespace ftwr\blogphp\boxes;
 
 use ftwr\blogphp\core\Container;
-use ftwr\blogphp\core\Validator;
 use ftwr\blogphp\core\forms\FormBuilder;
 
 class FormBuilderFactory implements RegisterBoxInterface

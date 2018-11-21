@@ -34,8 +34,6 @@ class Config
 	const LOGIN_SUBTITLE = ' | Войти на сайт';
 	const REGISTRATION_SUBTITLE = ' | Регистрация';
 
-	const ADMIN_LOGIN = 'admin'; // TODO: delete this?
-	const ADMIN_PASSWORD = 'qwerty'; // TODO: delete this?
 	const SALT = 's;fa47wyt';
 	const SALT_FORMS = '/#@=@/';
 }

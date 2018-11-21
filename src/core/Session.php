@@ -2,14 +2,7 @@
 
 namespace ftwr\blogphp\core;
 
-interface iSession
-{
-	public function get($field);
-	public function set($field, $content);
-	public function delete($field);
-}
-
-class Session implements iSession
+class Session
 {
 	public function get($field)
 	{

@@ -5,7 +5,6 @@ namespace ftwr\blogphp\boxes;
 use ftwr\blogphp\core\Container;
 use ftwr\blogphp\core\User;
 
-
 class UserBox implements RegisterBoxInterface
 {
 	public function register(Container $container)
