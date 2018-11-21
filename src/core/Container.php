@@ -2,7 +2,7 @@
 
 namespace ftwr\blogphp\core;
 
-use ftwr\blogphp\core\boxes\RegisterBoxInterface;
+use ftwr\blogphp\boxes\RegisterBoxInterface;
 use ftwr\blogphp\core\exceptions\UnknownIdentifierException;
 
 class Container

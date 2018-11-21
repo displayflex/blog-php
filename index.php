@@ -8,10 +8,10 @@ use ftwr\blogphp\models\PostModel;
 use ftwr\blogphp\core\Request;
 use ftwr\blogphp\core\exceptions\ErrorNotFoundException;
 use ftwr\blogphp\core\Container;
-use ftwr\blogphp\core\boxes\DBDriverBox;
-use ftwr\blogphp\core\boxes\ModelsFactory;
-use ftwr\blogphp\core\boxes\UserBox;
-use ftwr\blogphp\core\boxes\FormBuilderFactory;
+use ftwr\blogphp\boxes\DBDriverBox;
+use ftwr\blogphp\boxes\ModelsFactory;
+use ftwr\blogphp\boxes\UserBox;
+use ftwr\blogphp\boxes\FormBuilderFactory;
 
 session_start();
 error_reporting(E_ALL);
@@ -120,7 +120,6 @@ $controller->render();
 
 // TODO: создать класс Application (последний урок 2ого модуля)
 // FIXME: разбить Validator на классы (начало 5ого урока)
-// TODO: перенести Boxes из сore в корень проекта
 // TODO: пересмотреть классы кук и сессий (как у 1gor)
 // TODO: проверить неймспейсы
 // TODO: вынести интрефейс сессий и кук в отдельный файл или удалить

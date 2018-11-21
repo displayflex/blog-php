@@ -1,6 +1,6 @@
 <?php
 
-namespace ftwr\blogphp\core\boxes;
+namespace ftwr\blogphp\boxes;
 
 use ftwr\blogphp\core\Container;
 use ftwr\blogphp\core\User;
