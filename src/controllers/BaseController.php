@@ -42,6 +42,7 @@ class BaseController
 	public function errorHandler($message, $trace)
 	{
 		$msg = Config::ENVIROMENT_DEV ? $message . '<br><br>Trace:<br>' . $trace : $message;
+
 		$this->title .= Config::ERR_SUBTITLE;
 		$this->content = $this->build(
 			'v_404_inline',
