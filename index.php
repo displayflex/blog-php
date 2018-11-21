@@ -1,24 +1,20 @@
 <?php
 
+require_once __DIR__ . '/vendor/autoload.php';
+
+use ftwr\blogphp\core\Config;
+use ftwr\blogphp\core\DBConnector;
+use ftwr\blogphp\models\PostModel;
+use ftwr\blogphp\core\Request;
+use ftwr\blogphp\core\exceptions\ErrorNotFoundException;
+use ftwr\blogphp\core\Container;
+use ftwr\blogphp\core\boxes\DBDriverBox;
+use ftwr\blogphp\core\boxes\ModelsFactory;
+use ftwr\blogphp\core\boxes\UserBox;
+use ftwr\blogphp\core\boxes\FormBuilderFactory;
+
 session_start();
-
 error_reporting(E_ALL);
-
-use core\Config;
-use core\DBConnector;
-use models\PostModel;
-use core\Request;
-use core\Exceptions\ErrorNotFoundException;
-use core\Container;
-use core\Boxes\DBDriverBox;
-use core\Boxes\ModelsFactory;
-use core\Boxes\UserBox;
-use core\Boxes\FormBuilderFactory;
-
-function __autoload($classname)
-{
-	include_once __DIR__ . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';
-}
 
 /**
  * После настройки в .htaccess, URI-запрос попадает в $_GET['chpu'], затем разбивается по "/"
@@ -88,7 +84,7 @@ try {
 		$action = implode('', $action);
 	}
 
-	$controller = sprintf('controllers\%sController', $controller);
+	$controller = sprintf('ftwr\blogphp\controllers\%sController', $controller);
 	$action = sprintf('%sAction', $action);
 
 	if (!method_exists($controller, $action) || (isset($uriParts[2]) && !ctype_digit($uriParts[2]))) {
@@ -109,8 +105,9 @@ try {
 	$controller->$action();
 } catch (\Exception $e) {
 	$request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_SESSION, $_FILES);
-	$controller = sprintf('controllers\%sController', 'Base');
-	$controller = new $controller($request);
+	$container = new Container();
+	$controller = sprintf('ftwr\blogphp\controllers\%sController', 'Base');
+	$controller = new $controller($request, $container);
 
 	if ($e->getCode() === 404) {
 		$controller->error404Handler();
@@ -126,3 +123,4 @@ $controller->render();
 // TODO: перенести Boxes из сore в корень проекта
 // TODO: пересмотреть классы кук и сессий (как у 1gor)
 // TODO: проверить неймспейсы
+// TODO: вынести интрефейс сессий и кук в отдельный файл или удалить

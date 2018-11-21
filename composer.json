@@ -1,0 +1,17 @@
+{
+	"name": "fillowthewhiterabbit/blog-php",
+	"authors": [{
+		"name": "fillowthewhiterabbit",
+		"email": "3tonishere@gmail.com"
+	}],
+	"minimum-stability": "dev",
+	"require": {
+		"1g0rbm/handybox": "dev-master",
+		"symfony/dotenv": "^4.2@dev"
+	},
+	"autoload": {
+		"psr-4": {
+			"ftwr\\blogphp\\": "src/"
+		}
+	}
+}
