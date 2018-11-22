@@ -39,25 +39,6 @@ class BaseController
 		);
 	}
 
-	public function errorHandler($message, $trace)
-	{
-		$msg = Config::ENVIROMENT_DEV ? $message . '<br><br>Trace:<br>' . $trace : $message;
-
-		$this->title .= Config::ERR_SUBTITLE;
-		$this->content = $this->build(
-			'v_404_inline',
-			[
-				'msg' => $msg
-			]
-		);
-	}
-
-	public function error404Handler()
-	{
-		header("HTTP/1.0 404 Not Found");
-		$this->redirect(Config::ROOT . "src/views/v_403.php");
-	}
-
 	public function getErrorsAsString(array $errors)
 	{
 		$mergedErrors = array_reduce($errors, 'array_merge', array());

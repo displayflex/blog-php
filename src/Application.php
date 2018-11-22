@@ -5,14 +5,13 @@ namespace ftwr\blogphp;
 use ftwr\blogphp\core\Config;
 use ftwr\blogphp\core\Container;
 use ftwr\blogphp\core\Request;
-use ftwr\blogphp\boxes\DBDriverBox;
-use ftwr\blogphp\boxes\ModelsFactory;
-use ftwr\blogphp\boxes\UserBox;
-use ftwr\blogphp\boxes\FormBuilderFactory;
 use ftwr\blogphp\core\exceptions\ErrorNotFoundException;
+use ftwr\blogphp\controllers\PageController;
 
 class Application
 {
+	const MSG_ERROR = 'Page not found!';
+
 	public $currentController;
 	public $currentAction;
 	protected $container;
@@ -20,35 +19,27 @@ class Application
 
 	public function __construct(Container $container = null)
 	{
+		$this->enableErrorsHandling();
 		$this->container = $container === null ? new Container() : $container;
 		$this->initRequest();
-
-		$this->container->register(new DBDriverBox());
-		$this->container->register(new ModelsFactory());
-		$this->container->register(new UserBox());
-		$this->container->register(new FormBuilderFactory());
-
+		$this->parceUrl();
 	}
 
 	public function run()
 	{
-		try {
-			$this->parceUrl();
-			$controller = new $this->currentController($this->request, $this->container);
-			$action = $this->currentAction;
-			$controller->$action();
-		} catch (\Exception $e) {
-			$controller = sprintf('ftwr\blogphp\controllers\%sController', 'Base');
-			$controller = new $controller($this->request, $this->container);
-
-			if ($e->getCode() === 404) {
-				$controller->error404Handler();
-			} else {
-				$controller->errorHandler($e->getMessage(), $e->getTraceAsString());
-			}
-		}
-
+		$controller = new $this->currentController($this->request, $this->container);
+		$action = $this->currentAction;
+		$controller->$action();
 		$controller->render();
+	}
+
+	public function enableErrorsHandling()
+	{
+		set_exception_handler(function ($e) {
+			$controller = new PageController($this->request, $this->container);
+			$controller->errorAction($e);
+			$controller->render();
+		});
 	}
 
 	protected function initRequest()
@@ -90,7 +81,7 @@ class Application
 		$controller = sprintf('ftwr\blogphp\controllers\%sController', $controller);
 
 		if (isset($uriParts[0]) && !file_exists('src/controllers/' . ucfirst($uriParts[0]) . 'Controller.php')) {
-			throw new ErrorNotFoundException('Page Not Found', 1);
+			throw new ErrorNotFoundException(self::MSG_ERROR, 404);
 		}
 
 		return $controller;
